@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spending Summary — A/B Test</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:    #111827;
+      --muted:  #6b7280;
+      --border: #e5e7eb;
+      --bg:     #ffffff;
+      --surface:#f9fafb;
+      --accent: #2563eb;
+      --red:    #dc2626;
+      --green:  #16a34a;
+      --yellow: #d97706;
+      --max:    820px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      padding: 48px 24px;
+    }
+
+    .page { max-width: var(--max); margin: 0 auto; }
+
+    h1 { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 6px; }
+    h2 { font-size: 1.125rem; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 16px; }
+    h3 { font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+
+    .meta { font-size: 0.875rem; color: var(--muted); margin-bottom: 48px; }
+
+    /* ── Sections ── */
+    .block { margin-bottom: 56px; }
+
+    /* ── Summary bar ── */
+    .income-bar {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      padding: 20px 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 28px;
+    }
+    .income-bar .stat label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); display: block; margin-bottom: 2px; }
+    .income-bar .stat .val { font-size: 1.375rem; font-weight: 800; letter-spacing: -0.02em; }
+    .income-bar .stat .val.neg { color: var(--yellow); }
+    .income-bar .stat .val.ok  { color: var(--green); }
+
+    /* ── Category table ── */
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; margin-bottom: 28px; }
+    thead th { text-align: left; padding: 8px 12px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); border-bottom: 2px solid var(--border); }
+    tbody tr:hover { background: var(--surface); }
+    td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    td.amount { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    td.pct { text-align: right; color: var(--muted); font-size: 0.825rem; white-space: nowrap; }
+    .flag { display: inline-block; font-size: 0.7rem; font-weight: 700; padding: 2px 6px; border-radius: 4px; margin-left: 8px; vertical-align: middle; }
+    .flag.hi  { background: #fef2f2; color: var(--red); }
+    .flag.watch { background: #fffbeb; color: var(--yellow); }
+
+    /* ── Transaction log ── */
+    .txn-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
+    .txn-card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .txn-card-header {
+      padding: 8px 14px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      color: var(--muted);
+    }
+    .txn-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 7px 14px;
+      font-size: 0.8375rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .txn-row:last-child { border-bottom: none; }
+    .txn-date { color: var(--muted); font-size: 0.75rem; margin-right: 8px; flex-shrink: 0; }
+    .txn-name { flex: 1; }
+    .txn-amt  { font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; margin-left: 12px; }
+    .txn-row.payday-after { background: #fff7ed; }
+
+    /* ── Pattern callout ── */
+    .callout {
+      border-left: 3px solid var(--yellow);
+      background: #fffbeb;
+      padding: 14px 18px;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.9rem;
+      margin-bottom: 28px;
+      line-height: 1.55;
+    }
+    .callout strong { color: var(--yellow); }
+
+    /* ── Message versions ── */
+    .version-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 600px) { .version-grid { grid-template-columns: 1fr; } }
+
+    .version-box {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .version-header {
+      padding: 12px 18px;
+      font-size: 0.8125rem;
+      font-weight: 700;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .version-header.a { background: #eff6ff; color: var(--accent); }
+    .version-header.b { background: #f0fdf4; color: var(--green); }
+    .badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.04em;
+    }
+    .badge.a { background: var(--accent); color: #fff; }
+    .badge.b { background: var(--green); color: #fff; }
+
+    .version-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      font-weight: 400;
+      margin-left: auto;
+    }
+
+    .message-body {
+      padding: 20px 18px;
+      font-size: 0.9375rem;
+      line-height: 1.65;
+      white-space: pre-wrap;
+    }
+
+    .suggestion-line {
+      margin-top: 12px;
+      padding: 12px 14px;
+      background: #eff6ff;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      border-left: 3px solid var(--accent);
+      line-height: 1.55;
+    }
+
+    /* ── Test guide ── */
+    .guide {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px;
+      font-size: 0.9rem;
+    }
+    .guide p { margin-bottom: 10px; }
+    .guide p:last-child { margin-bottom: 0; }
+    .guide ol, .guide ul { padding-left: 20px; }
+    .guide li { margin-bottom: 6px; }
+    .guide strong { font-weight: 700; }
+
+    .divider { border: none; border-top: 1px solid var(--border); margin: 56px 0; }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <h1>Spending Summary — A/B Test</h1>
+  <p class="meta">Mock data &middot; 24-year-old, $45K salary, Orlando FL &middot; May 2026 &middot; Clarity venture prototype</p>
+
+  <!-- ══════════════════════════════════════════════
+       SECTION 1: THE MOCK DATA
+  ══════════════════════════════════════════════ -->
+  <div class="block">
+    <h3>Section 1 &mdash; Mock Spending Data</h3>
+
+    <!-- Income vs Spend bar -->
+    <div class="income-bar">
+      <div class="stat">
+        <label>Take-home (May)</label>
+        <div class="val ok">$3,046</div>
+      </div>
+      <div class="stat">
+        <label>Total spent</label>
+        <div class="val neg">$2,943</div>
+      </div>
+      <div class="stat">
+        <label>Left over</label>
+        <div class="val neg">$103</div>
+      </div>
+      <div class="stat">
+        <label>Saved</label>
+        <div class="val neg">$0</div>
+      </div>
+    </div>
+
+    <!-- Category summary table -->
+    <table>
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th style="text-align:right">Amount</th>
+          <th style="text-align:right">% of income</th>
+          <th style="text-align:right">Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Housing &amp; utilities <span style="color:var(--muted);font-size:.8rem">(rent, electric, internet, renters ins.)</span></td>
+          <td class="amount">$1,306</td>
+          <td class="pct">42.9%</td>
+          <td style="font-size:.8rem;color:var(--muted)">Fixed</td>
+        </tr>
+        <tr>
+          <td>Debt payments <span style="color:var(--muted);font-size:.8rem">(student loan + credit card min.)</span></td>
+          <td class="amount">$362</td>
+          <td class="pct">11.9%</td>
+          <td style="font-size:.8rem;color:var(--muted)">Fixed</td>
+        </tr>
+        <tr>
+          <td>
+            Dining out &amp; delivery
+            <span class="flag hi">HIGHEST DISCRETIONARY</span>
+          </td>
+          <td class="amount" style="color:var(--red)">$412</td>
+          <td class="pct" style="color:var(--red)">13.5%</td>
+          <td style="font-size:.8rem;color:var(--red)">Spike after each payday</td>
+        </tr>
+        <tr>
+          <td>Transportation <span style="color:var(--muted);font-size:.8rem">(car insurance, gas, parking)</span></td>
+          <td class="amount">$266</td>
+          <td class="pct">8.7%</td>
+          <td style="font-size:.8rem;color:var(--muted)">Fixed + variable</td>
+        </tr>
+        <tr>
+          <td>Groceries</td>
+          <td class="amount">$253</td>
+          <td class="pct">8.3%</td>
+          <td style="font-size:.8rem;color:var(--green)">On track</td>
+        </tr>
+        <tr>
+          <td>
+            Shopping <span style="color:var(--muted);font-size:.8rem">(Amazon, Ulta, clothing)</span>
+            <span class="flag watch">WATCH</span>
+          </td>
+          <td class="amount" style="color:var(--yellow)">$206</td>
+          <td class="pct" style="color:var(--yellow)">6.8%</td>
+          <td style="font-size:.8rem;color:var(--muted)">Cosmetics $67, clothes $54</td>
+        </tr>
+        <tr>
+          <td>Phone</td>
+          <td class="amount">$65</td>
+          <td class="pct">2.1%</td>
+          <td style="font-size:.8rem;color:var(--muted)">Fixed</td>
+        </tr>
+        <tr>
+          <td>Subscriptions <span style="color:var(--muted);font-size:.8rem">(Netflix, Hulu, Spotify, gym, Prime)</span></td>
+          <td class="amount">$73</td>
+          <td class="pct">2.4%</td>
+          <td style="font-size:.8rem;color:var(--muted)">Auto-renewing</td>
+        </tr>
+        <tr style="font-weight:700;background:var(--surface)">
+          <td>Total</td>
+          <td class="amount">$2,943</td>
+          <td class="pct">96.6%</td>
+          <td style="font-size:.8rem;color:var(--yellow)">$103 remaining</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Transaction log -->
+    <h3 style="margin-bottom:14px">Individual transactions (orange = 3 days after payday)</h3>
+    <div class="txn-grid">
+
+      <div class="txn-card">
+        <div class="txn-card-header">Housing &amp; Utilities — $1,306</div>
+        <div class="txn-row"><span class="txn-date">May 1</span><span class="txn-name">Rent</span><span class="txn-amt">$1,150</span></div>
+        <div class="txn-row"><span class="txn-date">May 3</span><span class="txn-name">Duke Energy (electric)</span><span class="txn-amt">$87</span></div>
+        <div class="txn-row"><span class="txn-date">May 3</span><span class="txn-name">Spectrum (internet)</span><span class="txn-amt">$55</span></div>
+        <div class="txn-row"><span class="txn-date">May 15</span><span class="txn-name">Renters insurance</span><span class="txn-amt">$14</span></div>
+      </div>
+
+      <div class="txn-card">
+        <div class="txn-card-header">Debt Payments — $362</div>
+        <div class="txn-row"><span class="txn-date">May 1</span><span class="txn-name">Student loan (MOHELA)</span><span class="txn-amt">$287</span></div>
+        <div class="txn-row"><span class="txn-date">May 15</span><span class="txn-name">Chase credit card (min.)</span><span class="txn-amt">$75</span></div>
+      </div>
+
+      <div class="txn-card">
+        <div class="txn-card-header">Transportation — $266</div>
+        <div class="txn-row"><span class="txn-date">May 2</span><span class="txn-name">Car insurance</span><span class="txn-amt">$138</span></div>
+        <div class="txn-row"><span class="txn-date">May 5</span><span class="txn-name">BP Gas</span><span class="txn-amt">$47</span></div>
+        <div class="txn-row"><span class="txn-date">May 13</span><span class="txn-name">Shell Gas</span><span class="txn-amt">$38</span></div>
+        <div class="txn-row"><span class="txn-date">May 21</span><span class="txn-name">Sunoco Gas</span><span class="txn-amt">$31</span></div>
+        <div class="txn-row"><span class="txn-date">May 27</span><span class="txn-name">Parking</span><span class="txn-amt">$12</span></div>
+      </div>
+
+      <div class="txn-card">
+        <div class="txn-card-header">Groceries — $253</div>
+        <div class="txn-row"><span class="txn-date">May 4</span><span class="txn-name">Publix</span><span class="txn-amt">$89</span></div>
+        <div class="txn-row"><span class="txn-date">May 11</span><span class="txn-name">Publix</span><span class="txn-amt">$67</span></div>
+        <div class="txn-row"><span class="txn-date">May 18</span><span class="txn-name">Trader Joe's</span><span class="txn-amt">$54</span></div>
+        <div class="txn-row"><span class="txn-date">May 25</span><span class="txn-name">Publix</span><span class="txn-amt">$43</span></div>
+      </div>
+
+      <div class="txn-card">
+        <div class="txn-card-header" style="color:var(--red)">Dining &amp; Delivery — $412 ⚠</div>
+        <div class="txn-row payday-after"><span class="txn-date">May 2</span><span class="txn-name">DoorDash</span><span class="txn-amt">$34</span></div>
+        <div class="txn-row payday-after"><span class="txn-date">May 3</span><span class="txn-name">Chick-fil-A</span><span class="txn-amt">$14</span></div>
+        <div class="txn-row"><span class="txn-date">May 6</span><span class="txn-name">DoorDash</span><span class="txn-amt">$28</span></div>
+        <div class="txn-row"><span class="txn-date">May 8</span><span class="txn-name">Chipotle</span><span class="txn-amt">$17</span></div>
+        <div class="txn-row"><span class="txn-date">May 10</span><span class="txn-name">Starbucks</span><span class="txn-amt">$12</span></div>
+        <div class="txn-row"><span class="txn-date">May 11</span><span class="txn-name">DoorDash</span><span class="txn-amt">$41</span></div>
+        <div class="txn-row"><span class="txn-date">May 12</span><span class="txn-name">Starbucks</span><span class="txn-amt">$9</span></div>
+        <div class="txn-row"><span class="txn-date">May 14</span><span class="txn-name">Panera Bread</span><span class="txn-amt">$16</span></div>
+        <div class="txn-row"><span class="txn-date">May 15</span><span class="txn-name">DoorDash</span><span class="txn-amt">$38</span></div>
+        <div class="txn-row"><span class="txn-date">May 17</span><span class="txn-name">Chick-fil-A</span><span class="txn-amt">$13</span></div>
+        <div class="txn-row"><span class="txn-date">May 19</span><span class="txn-name">Starbucks</span><span class="txn-amt">$11</span></div>
+        <div class="txn-row"><span class="txn-date">May 21</span><span class="txn-name">DoorDash</span><span class="txn-amt">$29</span></div>
+        <div class="txn-row"><span class="txn-date">May 23</span><span class="txn-name">Chipotle</span><span class="txn-amt">$16</span></div>
+        <div class="txn-row payday-after"><span class="txn-date">May 25</span><span class="txn-name">Starbucks</span><span class="txn-amt">$10</span></div>
+        <div class="txn-row payday-after"><span class="txn-date">May 25</span><span class="txn-name">DoorDash</span><span class="txn-amt">$47</span></div>
+        <div class="txn-row payday-after"><span class="txn-date">May 26</span><span class="txn-name">Starbucks</span><span class="txn-amt">$13</span></div>
+        <div class="txn-row payday-after"><span class="txn-date">May 27</span><span class="txn-name">Chili's</span><span class="txn-amt">$31</span></div>
+        <div class="txn-row payday-after"><span class="txn-date">May 28</span><span class="txn-name">DoorDash</span><span class="txn-amt">$33</span></div>
+      </div>
+
+      <div class="txn-card">
+        <div class="txn-card-header" style="color:var(--yellow)">Shopping — $206</div>
+        <div class="txn-row"><span class="txn-date">May 3</span><span class="txn-name">Amazon</span><span class="txn-amt">$34</span></div>
+        <div class="txn-row"><span class="txn-date">May 9</span><span class="txn-name">Ulta Beauty</span><span class="txn-amt">$67</span></div>
+        <div class="txn-row"><span class="txn-date">May 12</span><span class="txn-name">Amazon</span><span class="txn-amt">$29</span></div>
+        <div class="txn-row"><span class="txn-date">May 24</span><span class="txn-name">H&amp;M</span><span class="txn-amt">$54</span></div>
+        <div class="txn-row"><span class="txn-date">May 26</span><span class="txn-name">Amazon</span><span class="txn-amt">$22</span></div>
+      </div>
+
+      <div class="txn-card">
+        <div class="txn-card-header">Subscriptions — $73</div>
+        <div class="txn-row"><span class="txn-date">May 1</span><span class="txn-name">Netflix</span><span class="txn-amt">$18</span></div>
+        <div class="txn-row"><span class="txn-date">May 1</span><span class="txn-name">Spotify</span><span class="txn-amt">$11</span></div>
+        <div class="txn-row"><span class="txn-date">May 5</span><span class="txn-name">Hulu</span><span class="txn-amt">$18</span></div>
+        <div class="txn-row"><span class="txn-date">May 8</span><span class="txn-name">Planet Fitness</span><span class="txn-amt">$10</span></div>
+        <div class="txn-row"><span class="txn-date">May 12</span><span class="txn-name">Amazon Prime</span><span class="txn-amt">$16</span></div>
+      </div>
+
+      <div class="txn-card">
+        <div class="txn-card-header">Phone — $65</div>
+        <div class="txn-row"><span class="txn-date">May 10</span><span class="txn-name">T-Mobile</span><span class="txn-amt">$65</span></div>
+      </div>
+
+    </div><!-- /txn-grid -->
+
+    <!-- Pattern callout -->
+    <div class="callout" style="margin-top:24px">
+      <strong>The payday pattern:</strong> Your two biggest spending weeks started on May 1 and May 25 — both paydays. In those first three days after each check hit, you spent $162 on food, delivery, and dining out alone. In the two quietest weeks of the month, the same category cost $82 total. The pattern is real and it repeats. This is exactly what Noor described: "this happens after I get paid and purchase items I had previously wanted but did not need."
+    </div>
+
+  </div><!-- /block -->
+
+  <hr class="divider" />
+
+  <!-- ══════════════════════════════════════════════
+       SECTION 2: THE TWO VERSIONS
+  ══════════════════════════════════════════════ -->
+  <div class="block">
+    <h3>Section 2 &mdash; A/B Test Messages</h3>
+    <p style="font-size:.9rem;color:var(--muted);margin-bottom:28px">
+      Send Version A to one group, Version B to another. Ask both groups the same follow-up one week later:
+      <em>"Did anything change about how you spent money this week? If so, what?"</em>
+      Do not mention the other version exists.
+    </p>
+
+    <div class="version-grid">
+
+      <!-- VERSION A: Summary + Suggestion -->
+      <div class="version-box">
+        <div class="version-header a">
+          <span class="badge a">A</span>
+          Summary + one specific suggestion
+          <span class="version-label">Habit coach hypothesis</span>
+        </div>
+        <div class="message-body">Hey! Here's your May money snapshot.
+
+You brought home $3,046 and spent $2,943, so you ended the month with $103 left — basically nothing saved.
+
+Your biggest surprise isn't what you'd probably guess. Groceries were fine ($253). The real number is dining out and delivery: $412 last month, which is more than you spent on food at home. You ordered DoorDash 8 times.
+
+There's a pattern in the timing, too. You spent the most in the first three days after each paycheck — $162 on food and delivery alone in those windows. The rest of the month was way quieter.
+<div class="suggestion-line">💡 One thing to try this month: give yourself a 3-day waiting period after payday before ordering delivery. That one shift would have saved you around $80 in May — enough to actually put something in savings.</div></div>
+      </div>
+
+      <!-- VERSION B: Summary only -->
+      <div class="version-box">
+        <div class="version-header b">
+          <span class="badge b">B</span>
+          Summary only — no suggestion
+          <span class="version-label">Visibility tool hypothesis</span>
+        </div>
+        <div class="message-body">Hey! Here's your May money snapshot.
+
+You brought home $3,046 and spent $2,943, so you ended the month with $103 left — basically nothing saved.
+
+Your biggest surprise isn't what you'd probably guess. Groceries were fine ($253). The real number is dining out and delivery: $412 last month, which is more than you spent on food at home. You ordered DoorDash 8 times.
+
+There's a pattern in the timing, too. You spent the most in the first three days after each paycheck — $162 on food and delivery alone in those windows. The rest of the month was way quieter.</div>
+      </div>
+
+    </div><!-- /version-grid -->
+  </div><!-- /block -->
+
+  <hr class="divider" />
+
+  <!-- ══════════════════════════════════════════════
+       SECTION 3: WHAT TO WATCH FOR
+  ══════════════════════════════════════════════ -->
+  <div class="block">
+    <h3>Section 3 &mdash; What You're Testing &amp; What to Watch For</h3>
+    <div class="guide">
+      <p><strong>The core question:</strong> Does naming a specific action (Version A) change behavior more than just naming the pattern (Version B)? Or do people who only see the data figure out what to do on their own?</p>
+
+      <p><strong>What Version A assumes:</strong> Visibility is necessary but not sufficient. Noor already knows she overspends — what she lacks is a concrete next action. The suggestion converts awareness into a micro-commitment she can actually hold.</p>
+
+      <p><strong>What Version B assumes:</strong> The data itself is the intervention. Once people see the payday pattern named clearly, they recognize themselves in it and self-direct. Adding a suggestion is either unnecessary or mildly patronizing.</p>
+
+      <p><strong>What to listen for in follow-ups:</strong></p>
+      <ul>
+        <li>Version A people: Did they follow the specific suggestion, or did they do something else instead? (If they did something different, the suggestion was still a trigger — just not the exact action.)</li>
+        <li>Version B people: Did they do nothing, or did they spontaneously name their own rule? (If they made up their own suggestion, visibility alone may be enough.)</li>
+        <li>Both groups: Did anyone push back on the data? ("That doesn't sound right" or "I already knew that.") Noor's self-image and her actual behavior are misaligned — some recipients may reject the mirror rather than change in response to it.</li>
+      </ul>
+
+      <p><strong>The answer that most changes your product direction:</strong><br>
+      If Version B people change behavior at the same rate as Version A, build the visibility tool. If Version A people change at a meaningfully higher rate, the suggestion layer is load-bearing and you're building a habit coach. If nobody changes in either group, neither hypothesis is right and the intervention point is somewhere else entirely.</p>
+    </div>
+  </div>
+
+</div><!-- /page -->
+</body>
+</html>
