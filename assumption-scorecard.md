@@ -1,6 +1,6 @@
 # Assumption Scorecard
 
-Two interviews conducted. One target customer (Noor, 24). One explicitly outside the target (Ben, 36). Verdicts reflect that sample size — nothing here is settled.
+Three interviews conducted. Two target customers (Noor, 24; Tamara, 24). One explicitly outside the target (Ben, 36). Verdicts reflect that sample size — nothing here is settled.
 
 ---
 
@@ -34,29 +34,32 @@ Ask directly in the next round: "Have you ever tried to create a budget or use a
 - Noor's magic fix is not "show me my spending." It is: "To shop smarter. I definitely need to re-evaluate purchases and appreciate what I already have, in terms of food, cosmetics, clothes, etc." She is describing a values and mindset shift, not an information gap. She does not believe that more awareness is what she needs.
 - Ben's magic fix is "automated saving or allotment toward goals anytime spending is below budget." He is already fully aware. What he wants is action taken on his behalf, not more data. This suggests that awareness is a phase people move through, not the permanent gap.
 
-**Verdict: Partially confirmed — but with an important caveat.**
-Awareness appears to matter: Noor's behavior briefly improves after a surprise moment, confirming that awareness influences intention. But Noor also demonstrates that awareness without structure does not produce sustained change. The assumption may be true as a precondition while being insufficient as a full explanation. Whether the target customer primarily lacks awareness, or primarily lacks the structure to act on awareness they already have, is still unresolved across a broader sample. Noor's profile suggests the latter, but she may be atypical.
+**Evidence for it, added from Interview 3 (Tamara):**
+- Tamara rates her own money management at 3/10 and describes having no real experience managing money independently. She has never created a personal budget and reports no anxiety about overspending — not because she has it under control, but because she does not appear to track it closely enough to register the surprise moments Noor describes. This looks like a genuine visibility gap, not a behavior-change gap.
+
+**Verdict: Split — the third interview complicates this rather than resolving it.**
+Noor already has partial awareness and still doesn't sustain change — evidence against awareness being the full explanation. Tamara reports no anxiety about overspending and has never budgeted at all — evidence that at least some target customers may genuinely lack basic awareness first. Two target-customer interviews now point in two different directions. This is not more settled than before; it is differently unsettled. The segment may contain two distinct profiles rather than one representative customer, which is consistent with the Filter A / Filter B split flagged in `business-model-canvas.md`.
 
 **What to change:**
-The next interviews should probe two things separately: (1) Do people actually not know where their money goes, or do they have a general sense and just not act on it? (2) What happens in the days after someone has a financial realization and decides to change? These are different problems that may require different solutions.
+The next interviews need to distinguish these profiles explicitly, not just add another data point to an average. Ask early: can this person say, with reasonable specificity, what they spent last month in their top two or three categories? A confident, specific answer looks like Noor — the gap is behavior change. A vague or absent answer looks like Tamara — the gap is closer to visibility. Track which is more common before assuming the product needs to solve one problem instead of two.
 
 ---
 
 ## Assumption 3: An AI-based experience would feel easier than a traditional budgeting app.
 
 **Evidence for it:**
-- None. No interviewee mentioned AI, expressed interest in it, or described a problem that they imagined AI solving.
+- Interview 3 (Tamara): when the concept was described directly — an app that auto-tracks spending and sends weekly summaries — she reacted positively and said she'd pay $5–8/month for it. She specifically named the fully passive, no-manual-input design as the reason it appealed to her.
 
 **Evidence against it:**
 - Neither Ben nor Noor referenced AI at any point, unprompted or in response to any question.
-- When asked for a magic fix, neither person described anything resembling an AI experience. Ben wanted automated goal-based savings. Noor wanted to change her mindset about consumption.
-- The synthesis notes that neither interviewee asked for a product of any kind. The AI assumption sits on top of a more basic assumption — that a product is what's needed — which is also untested.
+- Tamara's positive reaction came only after the concept was described to her directly — not from an open-ended question about her problem. Stated interest in a described hypothetical is a weaker signal than unprompted demand.
+- Tamara also named ChatGPT Plus, which she already pays for, as a substitute she could turn to for similar help. This means the appeal isn't the AI label by itself — a generic AI assistant is already perceived by at least one target customer as a plausible alternative.
 
-**Verdict: Inconclusive — and untested.**
-This assumption was never surfaced in the interviews. There is no evidence for it and no evidence against it. It is a product design hypothesis that has not yet been brought in front of a single target customer. The absence of any mention of AI is not a refutation, but it is a signal that the appeal of an AI experience is not self-evident to users who are describing their problem in their own words.
+**Verdict: First real evidence, still thin.**
+This assumption went untested through the first two interviews. One target customer has now reacted positively to a direct description of the concept and named a specific price. That is meaningfully more than "inconclusive." But it is one person's stated reaction to a hypothetical, not observed adoption, and she named a free-to-her substitute in the same breath — meaning the product needs to differentiate itself from "ask ChatGPT," not just claim to be AI-powered, for this to hold up as a reason to pay $5–8/month specifically for this product.
 
 **What to change:**
-This needs to be tested directly. In the next round, ask whether people have used any AI tools for money (ChatGPT, AI in banking apps, etc.) and what they thought. If not, describe the concept — an AI that connects to your bank, categorizes spending automatically, and explains it in plain language — and ask whether that sounds useful or not, and why. Do not assume the answer.
+Keep asking the direct-description question in every remaining interview, and start asking a follow-up: "What would this need to do that ChatGPT can't?" Tamara's answer (fully passive, no manual input, connected to her actual bank data) is a starting hypothesis, not a confirmed differentiator — it needs to hold up across more than one person.
 
 ---
 
@@ -65,7 +68,15 @@ This needs to be tested directly. In the next round, ask whether people have use
 | Assumption | Verdict |
 |---|---|
 | Traditional budgeting feels overwhelming or restrictive | Inconclusive — never directly tested |
-| People need awareness before they can change financial behavior | Partially confirmed — awareness influences intention but Noor shows it does not sustain change on its own |
-| An AI-based experience would feel easier than a traditional budgeting app | Inconclusive — completely untested, no interviewee mentioned AI |
+| People need awareness before they can change financial behavior | Split — Noor's case argues against a pure awareness gap; Tamara's argues for one. Two target-customer interviews now point in different directions |
+| An AI-based experience would feel easier than a traditional budgeting app | First positive signal (1 of 3 interviewees, Tamara) — direct reaction to a described concept, but stated interest only, and a free substitute (ChatGPT Plus) was named in the same breath |
 
-No assumption is fully confirmed. The most important finding is not about any one assumption — it is that the interviews did not surface an unprompted desire for the product. Both interviewees described their problem in behavioral and emotional terms, not as a need for a new tool. That is worth paying attention to before the next round.
+No assumption is fully confirmed. Ben and Noor described their problem in behavioral and emotional terms, not as a need for a new tool — Tamara is the first to react favorably once the tool was described to her, and the first to name a price. That shifts the picture from "no signal" to "one thin, real signal," which is still not enough to build on alone.
+
+---
+
+## New Data Points From Interview 3 (Not Part of the Original Three Assumptions)
+
+**Willingness to pay:** Tamara named $5–8/month unprompted as a price she'd pay for the described concept. This is the first willingness-to-pay data point in the entire project — previously a complete unknown per `business-model-canvas.md` Block 5. One person, consumer-side only. Institutional pricing remains completely untested.
+
+**Bank account connection:** Tamara did not refuse, but she did not say yes freely either — she would consult her mom or boyfriend first and wants verification, reviews, and a trusted-source signal before connecting an account. This is the first direct data on the resource flagged as the hardest to acquire and weakest in evidence in `business-model-canvas.md` Block 7. It suggests the barrier is real but potentially addressable through trust signals, not necessarily fatal.

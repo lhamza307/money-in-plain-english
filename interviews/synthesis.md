@@ -1,6 +1,6 @@
 # Interview Synthesis
 
-Two interviews conducted. One confirmed target customer, one explicitly outside the target.
+Three interviews conducted. Two confirmed target customers (Noor, Tamara), one explicitly outside the target (Ben).
 
 ---
 
@@ -44,17 +44,39 @@ This challenges the assumption that visibility alone changes behavior — which 
 
 ---
 
-## Across Both Interviews
+## Interview 3 — Tamara, Age 24
+
+**Who she is and her situation:**
+Tamara is 24 and just started her first full-time job after graduating. She rates her own money management at 3/10 and describes having no real experience managing money independently — she has always relied on others, and her mother currently budgets on her behalf. Her spending is mostly on personal items, and she reports no anxiety about overspending. Her short-term goal is to buy a new car; her long-term goal is to earn six figures a year, which she says she was taught is "the minimum for a real job." Her core motivation is financial freedom to buy what she wants.
+
+**Key points (paraphrased from a Granola AI meeting summary — not verbatim quotes, unlike Interviews 1 and 2):**
+- Has never created a personal budget. Her mother budgets for herself; her sister does the same with her husband. She sees independent budgeting as something she wants to start doing to build wealth.
+- Open to the concept of an app that auto-tracks spending and sends weekly summaries — the first target-customer reaction to the actual product concept, rather than just a description of the underlying problem.
+- Willing to pay $5–$8/month.
+- Noted she could get similar help from ChatGPT Plus, which she already uses — a substitute not previously named anywhere in the competitive landscape.
+- Named the key value prop for her as being fully passive, with no manual input required.
+- On connecting a bank account: hesitant, citing limited financial knowledge. Would consult her mom or boyfriend before connecting any account. Said she'd be more comfortable if the app were verified, had reviews, and came from a source she already trusts — she named Amazon as an example of that kind of trust.
+
+**What surprised or challenged assumptions:**
+
+Tamara is the first interview to react to the actual product concept rather than just describe the underlying problem — and the reaction is positive. This is the first evidence, however thin, for the previously untested AI assumption (Assumption 3 in the scorecard) and the first willingness-to-pay number in the project ($5–8/month, in range with the $4.99 consumer pricing hypothesis in `pricing-test.md`).
+
+Her profile also looks different from Noor's in a way that matters. Noor already self-monitors and double-thinks purchases — her gap is behavior change after awareness. Tamara reports no anxiety about overspending and has never budgeted at all — closer to a genuine awareness gap, not a behavior-change gap. If both profiles are common in the target segment, the "no system" vs. "knows but can't follow through" question from the Business Model Canvas may describe two real sub-segments rather than one person described two ways.
+
+Her answer on bank account connection is the first direct data on the single most critical untested assumption in the project. It is not a flat no, but it is not a frictionless yes either — trust has to be established first, and social proof (reviews, a recognizable brand, family/partner sign-off) does real work in that decision.
+
+---
+
+## Across All Three Interviews
 
 **What holds:**
-- Noor confirms the spending-surprise moment is real and happens to the target customer.
-- Noor has no formal system — she is operating on intention alone ("try and be more careful"), which is weak.
-- The financial pressures she describes (student loans, moving expenses, credit cards) match the problem statement exactly.
+- The spending-surprise / no-formal-system pattern is present in both target-customer interviews, though it shows up differently: Noor notices overspending and resolves to do better; Tamara doesn't track at all and isn't anxious about it either way.
+- Neither target-customer interview opened with a request for a specific tool — but for the first time, one of them (Tamara) reacted positively once the concept was described directly.
 
-**What is under pressure:**
-- Neither interviewee asked for an app, a financial coach, or AI-powered categorization. Neither named a tool they wished existed.
-- The target customer (Noor) already has partial awareness — her gap is not seeing the data, it is changing behavior after seeing it. The proposed solution focuses on the awareness step, but the evidence so far suggests the harder and more valuable step is what comes after awareness.
-- Ben's system (two accounts, one native bank app) is effective and free. It raises the question of whether the problem requires a new product at all, or whether it requires a better on-ramp to habits people could build themselves.
+**What is under pressure or newly complicated:**
+- Neither Noor nor Tamara asked for an app unprompted. Tamara's positive reaction only came after the concept was described to her — a weaker signal than unprompted demand, though still the first positive signal the venture has.
+- The "awareness is the gap" vs. "behavior change after awareness is the gap" question is no longer just about whether Noor is atypical. Two target customers now show two different profiles — Noor supports the behavior-change reading, Tamara supports the original awareness reading. This is a live split, not a resolved question.
+- Ben's system (two accounts, one native bank app) is effective and free, and Tamara named ChatGPT Plus — which she already pays for — as a mental substitute for this product. Both raise the same question from a different angle: what does this product do that an existing free or already-paid-for tool doesn't?
 
 **Sample size caveat:**
-Two interviews is not enough to validate or invalidate anything. The patterns above are worth tracking, not concluding from.
+Three interviews total, two of them target customers (Noor, Tamara), one explicitly outside the target (Ben). Two target-customer interviews is still not enough to call anything a confirmed pattern — it is enough to say the segment may not be as uniform as either single interview suggested on its own.

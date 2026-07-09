@@ -1,7 +1,7 @@
 # Venture Direction Decision
 
-**As of:** June 2026
-**Evidence base:** 2 customer discovery interviews (1 target customer, 1 outside target), 3 weeks of competitive and systems analysis
+**As of:** July 2026 (revised after Interview 3)
+**Evidence base:** 3 customer discovery interviews (2 target customers, 1 outside target), 3 weeks of competitive and systems analysis
 
 ---
 
@@ -9,7 +9,7 @@
 
 Recent college graduates who are newly financially independent often have no structured system for managing their money. They are aware of their spending in a general sense — they know they overspend sometimes, and they intend to be more careful — but that awareness does not translate into sustained behavior change. When they discover they have overspent, their response is vague: a decision to try harder, with no specific action attached. Because they have no system to return to, the cycle repeats.
 
-The original problem statement (Week 1) framed this as a knowledge and awareness gap — that people do not know where their money goes. That remains the working hypothesis. One interview (Noor, 24) complicated it: she monitors spending consciously and can describe her overspending pattern clearly, yet the behavior continues. This suggests the problem may extend beyond awareness into the gap between knowing and acting. However, Noor is one person, and she may be atypical. The awareness hypothesis has not been disproven. It is being held as the primary framing while the behavior-change layer is tracked as an open question.
+The original problem statement (Week 1) framed this as a knowledge and awareness gap — that people do not know where their money goes. That was the working hypothesis. Two target-customer interviews now pull it in different directions instead of confirming or disproving it. Noor (24) monitors her spending consciously and can describe her overspending pattern clearly, yet the behavior continues — her gap sits between knowing and acting, not in not knowing. Tamara (24), interviewed in July, rates her own money management at 3/10, has never built any system, and reports no anxiety about overspending — her gap looks closer to the original knowledge-and-awareness framing. Two interviews is not enough to say which is more common. It is enough to say the target segment may not be one customer with one gap — it may be two customers with two different gaps that happen to share a demographic profile.
 
 **What the problem is not:** A budgeting knowledge problem. The existing market is saturated with budgeting tools. The gap is not that people need a better budget. It is that they do not have enough clarity about their current habits to engage with any system at all.
 
@@ -21,7 +21,9 @@ A recent college graduate who has just become financially independent for the fi
 
 The clearest profile so far is Noor: 24, recent master's graduate, just started her first job in her field, preparing to move out, paying off student loans while managing credit card and daily expenses. She double-thinks purchases consciously. She experiences post-payday impulse spending — buying things she has wanted but does not need — and notices it after the fact. When she does notice, she resolves to do better. Two weeks later, the same thing happens. Her magic fix, when asked directly, was not a tool: it was "to shop smarter" and "to appreciate what I already have."
 
-**What is not yet known:** Whether Noor is representative. She may be further along in her financial awareness than the typical person in the target segment. The next interviews need to test whether other recent graduates share her level of self-awareness or whether many still lack basic visibility into their spending. The answer changes the product emphasis significantly.
+A second profile, Tamara, sharpens the uncertainty rather than resolving it. She is also 24 and also just started her first full-time job after graduating, but her starting point looks different: she rates her own money management at 3/10, has never created a personal budget, and reports no anxiety about overspending. Her mother currently budgets on her behalf, and her sister does the same with her husband — she has watched other people manage money for her rather than doing it herself. Her goals are concrete and aspirational (buy a car short-term, earn six figures long-term) rather than framed around fixing a specific spending pattern the way Noor's are.
+
+**What is not yet known:** Whether Noor or Tamara is more representative of the target segment — or whether the segment is actually two segments. Noor already self-monitors and needs help sustaining behavior change after a moment of clarity. Tamara has no system and doesn't yet register the surprise-and-resolve cycle Noor describes, because she isn't tracking closely enough to notice it in the first place. The next interviews need to test explicitly which profile is more common, not simply add another individual data point to an average.
 
 ---
 
@@ -38,7 +40,7 @@ The failed startup record reinforces this. Wesabe lost to Mint because Mint auto
 The 5 Whys analysis from Week 2 identified that managing multiple platforms, accounts, and apps is part of what makes spending review feel tedious. Auto-categorization connected to a bank removes that friction. The AI layer is meant to translate raw transaction data into plain-language patterns — not to replace a financial advisor, but to remove the activation energy of self-review.
 
 **What the evidence does not yet support:**
-The AI assumption is completely untested. Neither interview surfaced any mention of AI, any interest in an AI financial tool, or any request for a product at all. Both interviewees described their problem in behavioral and emotional terms. Ben wanted automated goal savings. Noor wanted a mindset shift. Neither described wanting a tool that explains their spending to them. This does not mean the product idea is wrong — people do not always articulate the solution — but it means the concept has not been validated against a single target customer yet. This is the most exposed assumption in the current direction.
+The AI assumption was completely untested through the first two interviews — neither Ben nor Noor mentioned AI, expressed interest in it, or asked for a product at all. Interview 3 changed this partially. When the concept was described directly to Tamara — an app that auto-tracks spending and sends weekly summaries — she reacted positively and said she'd pay $5–8/month for it, citing the fully passive, no-manual-input design as the reason. That is the first real evidence the concept resonates with a target customer, not just the underlying problem. It is still a thin signal: it came only after the concept was described to her, not as something she asked for unprompted, and she named ChatGPT Plus — a subscription she already pays for — as a substitute in the same breath. The assumption is no longer completely untested, but it is not confirmed either. The open question has shifted from "does anyone want this" to "does this differentiate enough from a general AI assistant to be worth a dedicated subscription."
 
 ---
 
@@ -56,6 +58,12 @@ The AI assumption is completely untested. Neither interview surfaced any mention
 
 *Ben's self-built system is a signal worth holding.* A 36-year-old who is not the target customer built an effective financial system using two bank accounts and a free native banking app. He is not the customer. But he represents a question: at some point, people figure this out on their own. What is different about the target customer who cannot? The answer will either validate the product or sharpen its scope.
 
+*A second target-customer interview split the profile instead of confirming it.* Noor showed awareness without sustained action. Tamara, interviewed in July, shows something closer to the original knowledge gap — no system, no anxiety about overspending, reliance on someone else to manage money for her. Read together, they suggest the target segment may contain two distinct starting points rather than one. This doesn't change the beachhead market, but it may mean the product needs to serve two different first experiences, not one.
+
+*The AI assumption got its first real test, and a first real number.* Interview 3 was the first time the product concept — described explicitly — was placed in front of a target customer, which is exactly what the validation plan below called for. The reaction was positive, and she named a specific price ($5–8/month). It's one person and a reactive signal, not unprompted demand, but it's the first time this venture has moved past pure competitive inference on this question.
+
+*Bank-account trust got its first direct answer.* Previously flagged repeatedly as the single most critical untested assumption. Tamara's answer — hesitant, would consult family first, needs verification and a trusted-brand signal before connecting — is not a green light, but it is the first evidence the barrier is addressable friction rather than an outright refusal.
+
 ---
 
 ## Biggest Remaining Risk and Validation Plan
@@ -66,14 +74,16 @@ This risk has two layers. First, neither interviewee described wanting a product
 
 If target customers manage their money through vague self-monitoring and intention, a product that requires them to connect a bank account and trust an AI to categorize their spending introduces several new friction points — not fewer. Mint proved that automation wins over manual effort, but Mint also shut down. Engagement is the gap the market has not solved.
 
+Interview 3 (Tamara, July 2026) is the first movement on this. When the concept was placed in front of her explicitly, she did not download or use anything — but she reacted positively and named a price. That is a step toward testing the leap from "problem exists" to "person adopts product," not proof it holds. One person's stated interest in a hypothetical is a long way from adoption behavior.
+
 **How to validate it:**
 
 The next round of interviews should do three things that the first two did not:
 
-1. **Ask directly whether they have tried any money management tool.** If yes, what happened. If no, why not. This tests whether the barrier is product discovery or something the tools themselves fail to provide.
+1. **Ask directly whether they have tried any money management tool.** If yes, what happened. If no, why not. This tests whether the barrier is product discovery or something the tools themselves fail to provide. *(Partially done — Tamara has never tried one; her mother budgets for her instead. Keep asking this of every remaining interview.)*
 
-2. **Describe the concept explicitly and ask for a reaction.** "Imagine an app that connects to your bank account, automatically sorts your spending into categories, and once a week sends you a plain-language summary of where your money went — no setup, no budget required. Would you use that? Why or why not?" Do not wait for someone to ask for it. Put it in front of them.
+2. **Describe the concept explicitly and ask for a reaction.** "Imagine an app that connects to your bank account, automatically sorts your spending into categories, and once a week sends you a plain-language summary of where your money went — no setup, no budget required. Would you use that? Why or why not?" Do not wait for someone to ask for it. Put it in front of them. *(Done once — Tamara reacted positively and named $5–8/month, citing the passive design. She also named ChatGPT Plus as a substitute, unprompted — future interviews should follow up directly: what would this need to do that a general AI assistant can't? Repeat with three to four more target customers before treating this as a pattern.)*
 
-3. **Test whether awareness produces action.** Ask: "If you found out today that you spent $400 on food last month when you thought you spent $200 — what would you do with that information?" The answer reveals whether awareness is the missing piece or whether something else is needed after it.
+3. **Test whether awareness produces action.** Ask: "If you found out today that you spent $400 on food last month when you thought you spent $200 — what would you do with that information?" The answer reveals whether awareness is the missing piece or whether something else is needed after it. *(Still not asked.)* This is now more important than before — Tamara's low self-rated money management (3/10) and lack of anxiety about overspending suggest she may not have experienced this moment at all, which would itself be informative about which profile is more common.
 
-Until these questions are answered with at least three to five target customers, the product direction is a hypothesis grounded in competitive logic and one interview. That is enough to move forward. It is not enough to build.
+Until these questions are answered with at least three to five target customers, the product direction is a hypothesis grounded in competitive logic and two interviews, one of which has now reacted to the concept directly. That is more than before. It is still not enough to build.

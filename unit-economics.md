@@ -1,7 +1,7 @@
 # Unit Economics: Freemium → B2B2C Model
 
-**Built:** June 2026
-**Evidence base:** 2 interviews, competitive landscape research, public vendor pricing
+**Built:** June 2026. **Revised:** July 2026 — this file was not updated when the PMPM base case was revised ($6→$3) and the cost audit was completed (variable cost $0.73→$0.89, fixed cost ~$3,500→~$3,980) in `week5-progress.md` Session 2. Every table below now reflects those revisions. If a number here ever again diverges from `VENTURE.md`, `business-model-canvas.md`, or `week5-assignment.md`, trust those first.
+**Evidence base:** 3 interviews (2 target customers, 1 outside target), competitive landscape research, public vendor pricing
 **Every number is labeled: [DATA] = grounded in evidence, [ASSUMPTION] = estimated, flag before using**
 
 ---
@@ -38,9 +38,11 @@ No institutional pricing data exists in the interviews. The following is drawn f
 | Monarch Money (consumer, for reference) | $8.33 PMPM | [DATA — published pricing] |
 
 **Working range for modeling:**
-- Conservative: $3 PMPM (university buyer, small contract)
-- Base case: $6 PMPM (employer buyer, mid-market)
+- Base case: $3 PMPM (university buyer, small contract)
+- Upside: $6 PMPM (employer buyer, mid-market)
 - Optimistic: $10 PMPM (employer buyer, premium positioning)
+
+**Revision note (June 24, 2026):** The original base case was $6 PMPM, assuming the first institutional contract would come from a mid-market employer. Stress-testing against realistic first-year conditions — no buyer contacted yet, sales cycles running 6–18 months, first movers more likely to be universities or small employers — revised the base case down to $3 PMPM. Every table below uses $3 as the base case; $6 is retained as an upside scenario, not the working assumption, until a buyer confirms it.
 
 **What is untested:** No institution has been approached. No buyer has named a price. These ranges are competitive inference, not a quote. Do not treat the base case as validated until one institution signs a contract.
 
@@ -89,8 +91,12 @@ Not applicable. This is a digital SaaS product. No physical components. [DATA]
 | Plaid (bank aggregation) | $0.45 | [ASSUMPTION] |
 | AI / LLM API | $0.03 | [DATA — token pricing] |
 | Hosting / infrastructure | $0.25 | [ASSUMPTION] |
+| Email delivery (weekly summaries) | $0.01 | [DATA — SendGrid transactional pricing] |
+| Customer support time | $0.15 | [ASSUMPTION — 3% monthly contact rate, 20 min/contact, $15/hr] |
 | Payment processing | ~$0.00 | [DATA — negligible] |
-| **Total variable** | **$0.73/user/month** | |
+| **Total variable** | **$0.89/user/month** | |
+
+**Revision note:** The original total of $0.73/user/month omitted email delivery and customer support time. Both were added after a full cost-category audit. All calculations below use $0.89/user/month.
 
 ---
 
@@ -155,9 +161,13 @@ These costs exist regardless of how many users you have. They do not scale with 
 | Data privacy legal / attorney retainer | $500–$1,500 | [ASSUMPTION — required ongoing, especially at launch] |
 | Minimum infrastructure (baseline, 0 users) | $100–$200 | [ASSUMPTION] |
 | Plaid minimum access fee (if applicable) | $0–$500 | [ASSUMPTION — depends on Plaid tier; startup programs may waive] |
-| **Total fixed costs** | **$2,017–$6,033/month** | |
+| E&O / professional liability insurance | $42–$167 | [ASSUMPTION — required for a product offering financial guidance; added in cost audit] |
+| Software tools (GitHub, Figma, project management) | ~$100 | [ASSUMPTION — added in cost audit] |
+| Accounting / bookkeeping | ~$150 | [ASSUMPTION — required once institutional invoices exist; added in cost audit] |
+| Email service base fee, backup/data retention, business banking | ~$60 | [ASSUMPTION — added in cost audit] |
+| **Total fixed costs** | **$2,369–$6,510/month** | |
 
-**Working fixed cost estimate: $3,500/month** [ASSUMPTION — midpoint]
+**Working fixed cost estimate: $3,980/month** [ASSUMPTION — revised after cost audit, up from the original $3,500 midpoint]
 
 ---
 
@@ -168,40 +178,40 @@ These costs exist regardless of how many users you have. They do not scale with 
 | Item | Amount |
 |---|---|
 | Revenue | $0.00 |
-| Variable cost | ($0.73) |
-| Gross margin | **($0.73)/month** |
+| Variable cost | ($0.89) |
+| Gross margin | **($0.89)/month** |
 
-Every free user costs $0.73/month in direct variable costs before founder time or fixed cost allocation. This is the drag the free tier creates. It is manageable at small scale; it becomes a real problem if the free tier grows large and institutional revenue does not follow.
+Every free user costs $0.89/month in direct variable costs before founder time or fixed cost allocation. This is the drag the free tier creates. It is manageable at small scale; it becomes a real problem if the free tier grows large and institutional revenue does not follow.
 
 ### Institutional user — variable cost margin only
 
 | Scenario | Revenue (PMPM) | Variable cost | Gross margin | Gross margin % |
 |---|---|---|---|---|
-| Conservative ($3) | $3.00 | $0.73 | $2.27 | 76% |
-| Base case ($6) | $6.00 | $0.73 | $5.27 | 88% |
-| Optimistic ($10) | $10.00 | $0.73 | $9.27 | 93% |
+| Base case ($3) | $3.00 | $0.89 | $2.11 | 70% |
+| Upside ($6) | $6.00 | $0.89 | $5.11 | 85% |
+| Optimistic ($10) | $10.00 | $0.89 | $9.11 | 91% |
 
 Variable-cost gross margin is strong. This is normal for SaaS — the per-unit direct costs are low once the infrastructure exists. The problem is not the margin per user. It is reaching enough institutional users to cover fixed costs and founder time before cash runs out.
 
 ### Institutional user — fully-loaded margin (including founder time and fixed costs)
 
-At 1,000 institutional users, $3,500/month fixed costs, $2,400/month founder time = $5,900/month overhead allocated at $5.90/user/month:
+At 1,000 institutional users, $3,980/month fixed costs, $2,598/month founder time = $6,578/month overhead allocated at $6.58/user/month:
 
 | Scenario | Revenue | Variable cost | Overhead allocation | Fully-loaded margin | Margin % |
 |---|---|---|---|---|---|
-| Conservative ($3) | $3.00 | $0.73 | $5.90 | **($3.63)** | Negative |
-| Base case ($6) | $6.00 | $0.73 | $5.90 | **($0.63)** | Negative |
-| Optimistic ($10) | $10.00 | $0.73 | $5.90 | **$3.37** | 34% |
+| Base case ($3) | $3.00 | $0.89 | $6.58 | **($4.47)** | Negative |
+| Upside ($6) | $6.00 | $0.89 | $6.58 | **($1.47)** | Negative |
+| Optimistic ($10) | $10.00 | $0.89 | $6.58 | **$2.53** | 25% |
 
-At 1,000 institutional users, the model is marginally profitable only at the optimistic pricing tier. At the conservative tier, you are losing money per user even at 1,000 users. This is why user volume matters more than margin rate.
+At 1,000 institutional users, the model is only profitable at the optimistic pricing tier, and only marginally. Even the upside ($6) tier is still underwater at this scale. At the base case, you are losing more per user than revenue brings in. This is why user volume matters more than margin rate.
 
-At 3,000 institutional users, overhead drops to $1.97/user/month:
+At 3,000 institutional users, overhead drops to $2.19/user/month:
 
 | Scenario | Revenue | Variable cost | Overhead allocation | Fully-loaded margin | Margin % |
 |---|---|---|---|---|---|
-| Conservative ($3) | $3.00 | $0.73 | $1.97 | **$0.30** | 10% |
-| Base case ($6) | $6.00 | $0.73 | $1.97 | **$3.30** | 55% |
-| Optimistic ($10) | $10.00 | $0.73 | $1.97 | **$7.30** | 73% |
+| Base case ($3) | $3.00 | $0.89 | $2.19 | **($0.08)** | Negative (essentially break-even) |
+| Upside ($6) | $6.00 | $0.89 | $2.19 | **$2.92** | 49% |
+| Optimistic ($10) | $10.00 | $0.89 | $2.19 | **$6.92** | 69% |
 
 3,000 institutional users is roughly 15 contracts of 200 users each. That is a meaningful milestone.
 
@@ -209,32 +219,32 @@ At 3,000 institutional users, overhead drops to $1.97/user/month:
 
 ## 4. Break-Even on Fixed Costs
 
-**Fixed costs to cover each month: ~$5,900** ($3,500 fixed + $2,400 founder time)
+**Fixed costs to cover each month: ~$6,578** ($3,980 fixed + $2,598 founder time)
 
 This is the number that has to be exceeded by contribution margin (revenue minus variable costs) to break even.
 
-Contribution margin per institutional user = Revenue PMPM − $0.73 variable cost
+Contribution margin per institutional user = Revenue PMPM − $0.89 variable cost
 
 | PMPM rate | Contribution margin/user | Users to break even |
 |---|---|---|
-| $3 | $2.27 | **2,599 users** |
-| $6 | $5.27 | **1,120 users** |
-| $10 | $9.27 | **636 users** |
+| $3 (base case) | $2.11 | **3,118 users** |
+| $6 (upside) | $5.11 | **1,288 users** |
+| $10 (optimistic) | $9.11 | **722 users** |
 
 **Translated into institutional contracts** (assuming 200 users per contract):
 
 | PMPM rate | Users needed | Contracts needed | Monthly revenue at break-even |
 |---|---|---|---|
-| $3 | 2,599 | ~13 contracts | $7,797 |
-| $6 | 1,120 | ~6 contracts | $6,720 |
-| $10 | 636 | ~4 contracts | $6,360 |
+| $3 (base case) | 3,118 | ~16 contracts | $9,354 |
+| $6 (upside) | 1,288 | ~7 contracts | $7,728 |
+| $10 (optimistic) | 722 | ~4 contracts | $7,220 |
 
-The base case requires 6 signed institutional contracts covering ~200 users each before you stop losing money on monthly operations. This does not include recovering CAC, building cash reserves, or paying yourself a market-rate salary.
+The base case requires 16 signed institutional contracts covering ~200 users each before you stop losing money on monthly operations. This does not include recovering CAC, building cash reserves, or paying yourself a market-rate salary.
 
-**How long does it take to reach 6 contracts?**
-If institutional sales cycles run 6–18 months and you can run 2–3 simultaneously, reaching 6 contracts takes roughly 18–36 months from first outreach. That is 18–36 months of operating at a loss while building toward break-even. [ASSUMPTION — based on typical institutional SaaS sales cycles]
+**How long does it take to reach 16 contracts?**
+At a realistic pace of one contract signed per quarter — already optimistic relative to the 6–18 month institutional sales cycle norm — 16 contracts takes 48 months (4 years) from first outreach. With 20% annual churn on signed contracts factored in, the timeline extends to roughly 60 months (5 years). [ASSUMPTION — based on typical institutional SaaS sales cycles; see the stress test in `financial-model.xlsx`]
 
-This is the central cash flow problem in the model. It does not mean the model fails. It means it requires either outside capital or a drastically shorter institutional sales cycle than industry average to survive.
+This is the central cash flow problem in the model. It does not mean the model fails. It means it requires either outside capital, a faster institutional sales cycle than industry norms, or a higher realized PMPM than the $3 base case to survive on a reasonable timeline. At $6 PMPM (the upside tier, not yet validated by any buyer), the same math produces 7 contracts and a 21-month timeline — which of those two numbers turns out to be real is the single biggest lever in this model.
 
 ---
 
@@ -244,9 +254,9 @@ Before institutional revenue arrives, you are likely running a free consumer tie
 
 | Free users | Direct variable cost/month | Fixed overhead/month | Total monthly burn from free tier |
 |---|---|---|---|
-| 100 | $73 | $5,900 | $5,973 |
-| 500 | $365 | $5,900 | $6,265 |
-| 1,000 | $730 | $5,900 | $6,630 |
+| 100 | $89 | $6,578 | $6,667 |
+| 500 | $445 | $6,578 | $7,023 |
+| 1,000 | $890 | $6,578 | $7,468 |
 
 The free user direct cost is not the killer — fixed costs are. But the free tier adds burn without revenue, which extends the runway you need before the first institutional check.
 
@@ -258,9 +268,9 @@ If CAC per contract is $1,500 (midpoint of estimate) and the contract covers 200
 
 | PMPM rate | Monthly contract revenue | Monthly variable cost (200 users) | Monthly contribution | Months to recover $1,500 CAC |
 |---|---|---|---|---|
-| $3 | $600 | $146 | $454 | 3.3 months |
-| $6 | $1,200 | $146 | $1,054 | 1.4 months |
-| $10 | $2,000 | $146 | $1,854 | 0.8 months |
+| $3 (base case) | $600 | $178 | $422 | 3.6 months |
+| $6 (upside) | $1,200 | $178 | $1,022 | 1.5 months |
+| $10 (optimistic) | $2,000 | $178 | $1,822 | 0.8 months |
 
 Payback on CAC is fast once the contract is signed. The problem is not the payback period — it is the 6–18 months of sales time before the contract closes.
 
@@ -273,8 +283,8 @@ The unit economics of this model are structurally sound at the per-user level. H
 The model fails if:
 1. **Institutional sales take too long.** At 18+ months per cycle, you burn runway before revenue arrives.
 2. **Contracts are too small.** A university offering free access to 50 graduating seniors at $3 PMPM is $150/month — not enough to matter.
-3. **The free tier grows faster than institutional revenue.** If you acquire 5,000 free users and sign zero institutional contracts, you are spending ~$3,650/month on direct costs with zero return.
-4. **Pricing lands in the university tier, not the employer tier.** At $3 PMPM you need 13 contracts to break even. At $6 PMPM you need 6. The difference is significant.
+3. **The free tier grows faster than institutional revenue.** If you acquire 5,000 free users and sign zero institutional contracts, you are spending ~$4,450/month on direct costs with zero return.
+4. **Pricing lands in the university tier, not the employer tier.** This is already the base case, not a downside scenario — at $3 PMPM you need 16 contracts to break even. At $6 PMPM (unvalidated) you'd need 7. The difference between those two numbers is the single biggest swing factor in the model.
 
 ---
 
@@ -294,15 +304,15 @@ The model fails if:
 
 ## Summary Table
 
-| Metric | Conservative | Base Case | Optimistic |
+| Metric | Base Case | Upside | Optimistic |
 |---|---|---|---|
 | Institutional PMPM rate | $3 | $6 | $10 |
-| Variable cost per user | $0.73 | $0.73 | $0.73 |
-| Gross margin per user (variable only) | $2.27 (76%) | $5.27 (88%) | $9.27 (93%) |
-| Monthly overhead (fixed + founder) | $5,900 | $5,900 | $5,900 |
-| Institutional users to break even | 2,599 | 1,120 | 636 |
-| Contracts needed (at 200 users/contract) | ~13 | ~6 | ~4 |
-| Months to break even (at 1 contract/quarter) | ~39 months | ~18 months | ~12 months |
-| CAC payback (per contract) | 3.3 months | 1.4 months | 0.8 months |
+| Variable cost per user | $0.89 | $0.89 | $0.89 |
+| Gross margin per user (variable only) | $2.11 (70%) | $5.11 (85%) | $9.11 (91%) |
+| Monthly overhead (fixed + founder) | $6,578 | $6,578 | $6,578 |
+| Institutional users to break even | 3,118 | 1,288 | 722 |
+| Contracts needed (at 200 users/contract) | ~16 | ~7 | ~4 |
+| Months to break even (at 1 contract/quarter) | 48 months | 21 months | 12 months |
+| CAC payback (per contract) | 3.6 months | 1.5 months | 0.8 months |
 
 [All numbers except published competitor pricing and AI token pricing are assumptions until validated by institutional conversations.]

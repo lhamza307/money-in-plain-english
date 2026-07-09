@@ -16,14 +16,14 @@ The target customer has income and real financial obligations — student loans,
 
 *Filter B — Knows but can't follow through.* The person has enough knowledge to act but something interrupts consistent execution. They may have tried tracking before. They resolve to change after a bad month and the cycle repeats anyway. The product's job is to interrupt that cycle at the moment of resolution.
 
-Noor (Interview 2) fits both. One interview cannot establish which filter is more common, whether they travel together, or whether they describe two separate sub-segments. This is the most important thing the next round of interviews needs to resolve.
+Noor (Interview 2) fits both. Tamara (Interview 3) fits Filter A specifically, not both — she has never created a personal budget, has always relied on someone else (her mother) to manage money on her behalf, and reports no anxiety about overspending, consistent with someone who has not yet built self-monitoring habits rather than someone who has it and can't act on it. Two target-customer interviews with two different filter profiles is a real signal: this may not be one segment, it may be two.
 
 **What puts someone outside this segment:**
 - Already has a working system, even a self-built one (Ben, Interview 1: two accounts, Bank of America tools, fully in control)
 - Actively using a budgeting app
 - Not yet financially independent — employment and real obligations are the trigger, not graduation itself
 
-**Evidence base:** One target-customer interview (Noor, 24). Her profile is the basis for this description, not a confirmed pattern. The segment should be treated as a hypothesis until validated across at least three to five more target-customer interviews.
+**Evidence base:** Two target-customer interviews (Noor, 24; Tamara, 24). Their profiles diverge on which filter applies, which is itself useful information — it suggests the segment isn't uniform. Still short of the three-to-five interview threshold needed to treat either filter, or the segment as a whole, as validated.
 
 ---
 
@@ -45,7 +45,7 @@ No current competitor addresses the step before budgeting. YNAB, Monarch Money, 
 
 - That users will connect a bank account to a new product. Neither interviewee was asked this, and neither described wanting a tool. Willingness to share financial data is untested.
 - That awareness — even automatic, frictionless awareness — is sufficient to interrupt the cycle. The assumption scorecard rates this as partially confirmed with a significant caveat: Noor already has general awareness and still cycles. Whether structured, regular delivery changes that is an open question.
-- That AI-generated plain-language explanations are the right mechanism. Neither interviewee mentioned AI or expressed interest in it. This is a product design hypothesis with no customer validation yet.
+- That AI-generated plain-language explanations are the right mechanism. This had zero customer validation through the first two interviews. Interview 3 (Tamara) is the first to react to it directly, and the reaction was positive — but she also named ChatGPT Plus, which she already uses, as a substitute for similar help. That means the AI framing needs to differentiate itself from a general-purpose AI assistant, not just claim the AI label, to justify the $5–8/month she said she'd pay.
 
 **The value proposition that is supportable right now:**
 Automatic, no-setup spending awareness for people who are newly financially independent — delivered before they are asked to budget.
@@ -59,7 +59,7 @@ That delivering this awareness regularly, in plain language, is what interrupts 
 
 ## Block 5: Revenue Streams
 
-**What the interviews tell us:** Nothing directly. Neither interview asked whether Noor or Ben currently pays for financial tools, has paid for similar services before, or what outcome would be valuable enough to justify a purchase. Noor's financial situation — student loans, moving costs, credit card, everyday expenses — is the only relevant detail in the transcript. Drawing pricing conclusions from that alone would be inferring willingness to pay from financial circumstances, which is not the same thing. That assumption is untested.
+**What the interviews tell us:** For Noor and Ben, nothing directly — neither was asked about payment history or willingness to pay. Interview 3 (Tamara) changes this partially: when the product concept was described to her directly, she said she'd pay $5–8/month, and named the passive, no-manual-input design as the reason. She also mentioned she could ask ChatGPT Plus — which she already pays for — for similar help, meaning the comparison point in her head isn't a free competitor, it's a subscription she already holds. This is the first real willingness-to-pay signal in the project. It is one person, reacting to a hypothetical, on the consumer side only — it says nothing about institutional pricing, and one data point cannot set a price.
 
 **What the competitive landscape tells us:**
 
@@ -77,7 +77,7 @@ User complaints in the competitive analysis flag "upsells" (Rocket Money) and "u
 
 **Revenue model options — none validated:**
 
-*B2C subscription.* Direct charge to the user on a monthly or annual basis. Sits within the market range established by competitors. Straightforward model. What is untested: whether the target customer has ever paid for a financial tool, whether they would pay before experiencing value, and whether this product can hold a subscriber long enough to recoup acquisition cost.
+*B2C subscription.* Direct charge to the user on a monthly or annual basis. Sits within the market range established by competitors. Straightforward model. Tamara's stated $5–8/month is the first evidence that at least one target customer would consider this — though a stated price for a hypothetical is a much weaker signal than an actual payment, and this remains one person. What is still untested: whether the target customer has ever paid for a financial tool, whether they would pay before experiencing value, and whether this product can hold a subscriber long enough to recoup acquisition cost.
 
 *Freemium.* Core awareness value delivered free. Additional features — coaching, goal tracking, deeper insights, historical trends — on a paid tier. Reduces the barrier to initial adoption. What is untested: whether the free tier creates enough value to justify upgrading, and whether the product can define a paid tier that is genuinely compelling rather than just gated features.
 
@@ -169,7 +169,7 @@ Noor's cycle — spending surprise, vague resolve, repeat — breaks because the
 
 *Proprietary categorization logic.* The accuracy and usefulness of spending summaries depends on how well transactions are categorized. This is what differentiates a summary from a bank statement. It is built, not bought, and improves over time with data.
 
-*User trust — willingness to connect a bank account.* This is the hardest resource to acquire and the one with the weakest evidence. Neither interviewee was asked whether they would share bank data with a new product. Noor described her problem in terms of personal discipline and mindset, not as a data access problem. Whether target customers will hand over bank access to an early-stage product is the most critical unknown in the entire model. Without it, nothing else in the canvas functions.
+*User trust — willingness to connect a bank account.* This was the hardest resource to acquire and the one with the weakest evidence — until Interview 3. Tamara was asked directly and did not refuse, but was not immediately comfortable either: she cited limited financial knowledge, said she would consult her mother or boyfriend before connecting any account, and said she'd need to see verification, reviews, and a recognizably trustworthy source (she named Amazon as the kind of brand trust that would help) before connecting. This is the first direct evidence on the most critical unknown in the entire model. It suggests the barrier is real friction, not a flat refusal — trust-building signals (third-party verification, visible reviews, a credible brand presence) may be able to address it, though this is one person's stated reaction, not observed behavior at the actual connection step.
 
 *Founder credibility and lived experience.* The WHYME document establishes that the founder has lived the problem — survived on a low income, educated herself out of debt, experienced the cycle firsthand. This is a genuine differentiation from a founder who is theorizing about the problem. It is the one resource that exists right now without needing to be built or bought.
 
