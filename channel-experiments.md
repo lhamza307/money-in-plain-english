@@ -11,11 +11,15 @@ Testing specific acquisition channels for the target customer, following the cha
 ### Why this channel
 Highest combined reach, access, and fit of the channels mapped: no gatekeeper/ban risk (unlike Reddit's self-promo rules), and the #FinTok content genre already matches the exact problem space — payday-spending confessionals, "no one taught me this" content, loud budgeting. Doubles as message-testing: whether a described concept gets an unprompted-feeling reaction is the same open question Tamara's interview partially answered.
 
+**First counter-signal (Interview 4, Dooney, July 2026):** Dooney has deleted TikTok entirely and does not follow financial content creators on Instagram. One person is not a channel verdict — but it's the first interview data point that runs against this channel's core assumption rather than simply not addressing it. Worth watching for whether this recurs before treating TikTok reach as a given for this demographic.
+
+**Second counter-signal, on a different platform (Interview 5, Emily, July 2026):** Emily is Twitter-primary and follows no personal finance creators — the same absence Dooney showed, but on a different platform, which broadens the concern beyond a single-platform quirk. She does recognize Shark Tank figures for money quotes, which hints that mainstream business-media personalities (not niche #FinTok creators specifically) may carry more reach with at least part of this demographic than the current channel plan assumes. Two interviews in a row now running against the core TikTok/Instagram-creator assumption is enough to treat this channel bet as genuinely uncertain rather than a safe default — worth testing directly rather than assuming it will work once content is posted.
+
 ### Who I'm reaching — two lanes, not one
 The interviews split into two different profiles, so this channel runs two content lanes in parallel rather than one blended message:
 
 - **Tamara-lane:** 24, first full-time job, no anxiety about overspending, never budgeted, mom manages money for her. Entry point is *permission*, not shame — she hasn't started, doesn't need to be taught she's doing it wrong.
-- **Noor-lane:** 24, already double-thinks purchases, knows exactly when she's overspent, resolves to do better, doesn't. Entry point is *recognition* — she needs to see herself in the content, not be introduced to a new idea.
+- **Noor-lane:** 24, already double-thinks purchases, knows exactly when she's overspent, resolves to do better, doesn't. Entry point is *recognition* — she needs to see herself in the content, not be introduced to a new idea. Emily (22, Interview 5) reinforces this lane rather than requiring a third: her self-diagnosed "no urge to budget, not lack of awareness" is the same recognition-entry-point logic, stated even more directly than Noor's.
 
 Running both lanes and comparing performance is also a cheap way to get real evidence on Open Question #5 in `VENTURE.md` (is the target customer one profile or two, or genuinely two sub-segments).
 

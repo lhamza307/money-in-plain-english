@@ -284,6 +284,37 @@ This interview happened after the original test window (June 24–28) and was no
 
 ---
 
+## Update — Consumer Test Data Received (Interview 4, Dooney, July 2026)
+
+This is a second consumer pricing reaction, but **not a clean second data point on the same test** — the concept described to Dooney was materially different from what Tamara evaluated, and that difference has to be held onto when reading his number.
+
+- **Interviewee:** Dooney, 24–26 range (26) — candidate target customer; life-stage fit (job tenure, loans, financial independence timeline) was not established in this interview.
+- **Concept tested:** Not the passive "Money in Plain English" concept from this test plan. Dooney was shown a bank-linked tracker with weekly auto-categorization, pie chart breakdowns, and suggested areas to cut back — a dashboard-plus-coaching concept.
+- **Price named:** $15–20/month — well above Tamara's $5–8 and above the $4.99 hypothesis this test plan was built around.
+- **Signal type:** Positive reaction, no stated price objection — a YES signal per the criteria above, but attached to a different product than the one this test plan describes.
+- **Bank account question:** Asked and answered — open to linking via a secured one-time link, with no stated hesitation. This is the most frictionless answer collected so far, and it directly contrasts with Tamara's need for family consultation and trust signals.
+- **What this does and doesn't tell us:** It does not confirm that $15–20/month is achievable for "Money in Plain English" as scoped in this project — that price may belong to the richer, more prescriptive concept, or simply reflect Dooney's own high food spending making the number feel small. Before running this test again, use one fixed concept description (the script in Test 2 above) so future reactions are comparable to each other and to Tamara's.
+- **Institutional test: still not run.** Unchanged — this remains the single most important open item regardless of consumer-side pricing data.
+
+---
+
+## Update — Consumer Test Data Received (Interview 5, Emily, July 2026)
+
+A third consumer pricing reaction — and, like Dooney's, **not a clean third data point on the same test.** Emily was shown a third concept, distinct from both Tamara's and Dooney's.
+
+- **Interviewee:** Emily Brenton, 22 — confirmed target customer. Clean life-stage fit: her first "big girl job" with meaningful income, stated directly.
+- **Concept tested:** A third variant — not Tamara's zero-setup/no-suggestions passive concept, and not Dooney's full dashboard-with-pie-charts-and-cut-back-suggestions concept. Emily's version: auto-tracking linked to her account, a weekly summary, overspending flags, and suggested margin adjustments, with some light setup required (the user sets categories and budget numbers).
+- **Price named:** ~$10/month, benchmarked explicitly to Spotify (~$12/month); "less than $15" stated as her comfort zone. This sits between Tamara's $5–8 and Dooney's $15–20 — and so does the richness of the concept she reacted to.
+- **Signal type:** Strong positive reaction, no stated price objection — a YES signal per the criteria above. She went further than either prior interview: she said she would sign up today if the product existed, the strongest stated purchase intent collected in this project so far.
+- **New element — a pricing gradient, not just a third scattered point:** Ordered by concept richness, the three reactions now read: Tamara (zero setup, zero suggestions) → $5–8 · Emily (light setup, overspend flags + suggestions, no dashboard) → ~$10 · Dooney (full dashboard, pie charts, cut-back suggestions) → $15–20. This is the first time the willingness-to-pay data has looked directionally consistent with feature richness rather than simply divergent. It is still not a controlled test — three different people reacted to three different concepts, not the same concept three times.
+- **New element — a feature request not previously named:** Emily explicitly wants proactive, forward-looking spending warnings ("hey girl, slow down") for the next few days, in addition to a retrospective summary. None of the three concepts tested so far include this. Worth testing directly as its own price driver in a future interview, separate from suggestion richness.
+- **Bank account question:** Not addressed in this interview. The sample on this specific question remains at two (Tamara, Dooney).
+- **Institutional test: still not run.** Unchanged — still the single most important open item in the pricing validation plan, regardless of how consistent the consumer-side gradient looks.
+
+**What to change before the next consumer pricing interview:** The concept-mismatch problem flagged after Interview 4 hasn't been fixed — three interviews, three concepts. The next one should use one fixed concept description (the script in Test 2 above) so a fourth reaction is directly comparable to the other three, rather than adding a fourth point to a gradient that might just be an artifact of feature richness happening to track people's face-value price anchors (Spotify, Netflix, etc.).
+
+---
+
 ## What This Test Does Not Tell You
 
 This test does not validate whether anyone will actually use the product — only whether institutional buyers have a budget line and what price range it covers, and whether a consumer reacts to a price without flinching. Both are inputs to the model, not proof of product-market fit.
