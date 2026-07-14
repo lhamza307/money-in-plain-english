@@ -4,28 +4,35 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Clarity — Money in Plain English</title>
+  <title>Money in Plain English — Your money, finally in plain english.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,400&family=Nunito:wght@700;800&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --ink:     #111827;
+      --ink:     #2D2D2D;
       --muted:   #6b7280;
-      --border:  #e5e7eb;
+      --border:  #DCE8E1;
       --bg:      #ffffff;
-      --accent:  #2563eb;
-      --accent-h:#1d4ed8;
-      --green:   #16a34a;
-      --surface: #f9fafb;
+      --accent:  #5A9171;
+      --accent-h:#4C7B60;
+      --green:   #5A9171;
+      --surface: #F2F7F4;
       --max:     680px;
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      font-family: 'Lato', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
       background: var(--bg);
       color: var(--ink);
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, .step-title, .price-tag, .wordmark-text {
+      font-family: 'Nunito', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
     }
 
     /* ── Layout helpers ── */
@@ -48,12 +55,16 @@
       margin: 0 auto;
     }
     .wordmark {
-      font-size: 1.125rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.0625rem;
       font-weight: 700;
       letter-spacing: -0.02em;
       color: var(--ink);
       text-decoration: none;
     }
+    .wordmark img { height: 28px; width: auto; display: block; }
     .nav-cta {
       font-size: 0.875rem;
       color: var(--muted);
@@ -105,9 +116,11 @@
     .cta-btn:hover { background: var(--accent-h); }
 
     .cta-note {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
       margin-top: 12px;
       font-size: 0.8125rem;
-      color: var(--muted);
+      color: #87B89D;
     }
 
     /* ── SOCIAL PROOF ── */
@@ -124,8 +137,10 @@
     }
 
     .attribution {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
       font-size: 0.875rem;
-      color: var(--muted);
+      color: #87B89D;
       padding-left: 20px;
     }
 
@@ -133,11 +148,12 @@
     #how { }
 
     .section-label {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
       font-size: 0.8125rem;
-      font-weight: 600;
       letter-spacing: 0.07em;
       text-transform: uppercase;
-      color: var(--muted);
+      color: #87B89D;
       margin-bottom: 12px;
     }
 
@@ -205,8 +221,10 @@
     }
 
     .price-sub {
+      font-family: 'Lato', sans-serif;
+      font-weight: 300;
       font-size: 0.9375rem;
-      color: var(--muted);
+      color: #87B89D;
       margin-bottom: 24px;
     }
 
@@ -306,7 +324,7 @@
 
   <!-- NAV -->
   <nav>
-    <a class="wordmark" href="#">Clarity</a>
+    <a class="wordmark" href="#"><img src="logo.png" alt="Money in Plain English"><span class="wordmark-text">Money in Plain English</span></a>
     <a class="nav-cta" href="#pricing">See pricing</a>
   </nav>
 
@@ -316,11 +334,11 @@
       <span class="eyebrow">For recent graduates</span>
       <h1>"After I get paid, I spend. Then I tell&nbsp;myself I'll&nbsp;be more careful. Then it happens again."</h1>
       <p class="subheadline">
-        Clarity shows you exactly where your money is going — in plain English, not spreadsheets — so you can stop the cycle before it starts.
+        Money in Plain English shows you exactly where your money is going — in plain english, not spreadsheets — so you can stop the cycle before it starts.
       </p>
       <form class="signup-form" action="https://api.web3forms.com/submit" method="POST">
         <input type="hidden" name="access_key" value="34dc4136-42bf-40d3-a315-627ff2db3fcc">
-        <input type="hidden" name="subject" value="New early access sign-up — Clarity">
+        <input type="hidden" name="subject" value="New early access sign-up — Money in Plain English">
         <input type="hidden" name="redirect" value="thank-you.html">
         <input type="checkbox" name="botcheck" style="display:none">
         <input type="text" name="name" placeholder="Your name" required>
@@ -351,21 +369,21 @@
           <div class="step-num">1</div>
           <div>
             <p class="step-title">Connect your accounts</p>
-            <p class="step-body">Link your bank and credit cards in two minutes. No manual entry. Clarity reads what is already happening.</p>
+            <p class="step-body">Link your bank and credit cards in two minutes. No manual entry. We read what is already happening.</p>
           </div>
         </li>
         <li class="step">
           <div class="step-num">2</div>
           <div>
             <p class="step-title">Get a plain-English picture</p>
-            <p class="step-body">Every week, Clarity tells you where your money actually went — in sentences, not pie charts. No financial degree required.</p>
+            <p class="step-body">Every week, we tell you where your money actually went — in sentences, not pie charts. No financial degree required.</p>
           </div>
         </li>
         <li class="step">
           <div class="step-num">3</div>
           <div>
             <p class="step-title">Know what to do next</p>
-            <p class="step-body">You already know you want to "be more careful." Clarity tells you what that actually means for your specific spending — this week, not in theory.</p>
+            <p class="step-body">You already know you want to "be more careful." We tell you what that actually means for your specific spending — this week, not in theory.</p>
           </div>
         </li>
       </ol>
@@ -388,7 +406,7 @@
         </ul>
         <form class="signup-form" action="https://api.web3forms.com/submit" method="POST">
           <input type="hidden" name="access_key" value="34dc4136-42bf-40d3-a315-627ff2db3fcc">
-          <input type="hidden" name="subject" value="New early access sign-up — Clarity">
+          <input type="hidden" name="subject" value="New early access sign-up — Money in Plain English">
           <input type="hidden" name="redirect" value="thank-you.html">
           <input type="checkbox" name="botcheck" style="display:none">
           <input type="text" name="name" placeholder="Your name" required>
@@ -406,7 +424,7 @@
       <p class="final-sub">Join recent graduates who are finally seeing where their money goes.</p>
       <form class="signup-form" action="https://api.web3forms.com/submit" method="POST">
         <input type="hidden" name="access_key" value="34dc4136-42bf-40d3-a315-627ff2db3fcc">
-        <input type="hidden" name="subject" value="New early access sign-up — Clarity">
+        <input type="hidden" name="subject" value="New early access sign-up — Money in Plain English">
         <input type="hidden" name="redirect" value="thank-you.html">
         <input type="checkbox" name="botcheck" style="display:none">
         <input type="text" name="name" placeholder="Your name" required>
@@ -418,7 +436,7 @@
   </section>
 
   <footer>
-    <p>&copy; 2026 Clarity. Built for the step before budgeting.</p>
+    <p>&copy; 2026 Money in Plain English. Built for the step before budgeting.</p>
   </footer>
 
 </body>
