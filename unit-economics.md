@@ -1,290 +1,221 @@
-# Unit Economics: Freemium → B2B2C Model
+# Unit Economics: Direct-to-Consumer Subscription Model
 
-**Built:** June 2026. **Revised:** July 2026 — this file was not updated when the PMPM base case was revised ($6→$3) and the cost audit was completed (variable cost $0.73→$0.89, fixed cost ~$3,500→~$3,980) in `week5-progress.md` Session 2. Every table below now reflects those revisions. If a number here ever again diverges from `VENTURE.md`, `business-model-canvas.md`, or `week5-assignment.md`, trust those first.
-**Evidence base:** 3 interviews (2 target customers, 1 outside target), competitive landscape research, public vendor pricing
+**Built:** June 2026. **Revised:** July 2026 (Freemium → B2B2C base case, $6→$3 PMPM). **Revised again:** July 2026 — pivot to direct-to-consumer paid subscription following a founder-led product-scoping conversation that defined the v1 build (Sunday Summary, self-calibrating budget, multi-account bank linking, transaction correction/learning, and an AI chatbot). This is a founder decision, not new interview evidence — see `VENTURE.md`'s Revenue Model section for the full reasoning. B2B2C is not deleted from the project's history; it is retained in `business-model-canvas.md` as a deprioritized future option. Every table below models the subscription structure. If a number here ever diverges from `VENTURE.md`, `business-model-canvas.md`, or `financial-model.xlsx`, trust those first.
+**Evidence base:** 5 interviews (3 confirmed target customers with direct pricing reactions: Tamara $5–8/mo, Dooney $15–20/mo, Emily ~$10/mo), competitive landscape research, public vendor pricing. None of the three interviewees reacted to the specific bundled concept (chatbot included) this model now prices.
 **Every number is labeled: [DATA] = grounded in evidence, [ASSUMPTION] = estimated, flag before using**
 
 ---
 
 ## First: Define the "Customer" Unit
 
-This model has two customer types with different economics. Both are calculated below.
+This model now has one customer type moving through two phases, rather than two permanently separate customer types.
 
-- **Free user (Noor):** Costs money. Generates $0. Necessary to demonstrate engagement before institutions will buy.
-- **Institutional user:** A person served under an employer or university contract. Revenue flows from the institution, not the individual. This is where the money is.
+- **Free-trial user (weeks 1–4):** Costs money. Generates $0. Everyone starts here — the same person the trial converts (or doesn't) is the one who becomes a paying subscriber.
+- **Paying subscriber (month 2 onward):** Generates $7.99/month. This is where the money is.
 
-The unit that matters for break-even is the **institutional user** — one person whose access is paid for by an employer or university at a per-member-per-month (PMPM) rate.
+This is a structural change from the prior B2B2C model, where "free user" and "institutional user" were two different people entirely (a consumer who never paid, and an employee/student covered by a separate institutional contract). Under the subscription model there is no indefinite unmonetized tail — a trial user either converts within four weeks or stops costing money because they've left. The number that now matters most is **trial-to-paid conversion rate**, which has zero data behind it.
 
 ---
 
 ## 1. Revenue Per Customer
 
-### Free user
+### Free-trial user (weeks 1–4)
 **Revenue: $0/month** [DATA — by design]
 
-Every free user generates zero direct revenue until converted or picked up by an institutional contract.
+Every trial user generates zero revenue for up to four weeks (four Sunday Summaries), timed to the self-calibrating budget feature so people see the product's core differentiator before being asked to pay.
 
-### Institutional user (PMPM rate)
+### Paying subscriber
 
-No institutional pricing data exists in the interviews. The following is drawn from competitor and adjacent market pricing:
+**Working price: $7.99/month** [ASSUMPTION — founder-set, informed by but not directly tested against this exact concept]
 
-| Source | Rate | Reliability |
-|---|---|---|
-| LearnLux (employer financial wellness) | ~$3–8 PMPM | [ASSUMPTION — industry estimates, not verified quotes] |
-| Origin Financial (employer) | ~$8–12 PMPM | [ASSUMPTION — industry estimates] |
-| SmartDollar (employer, Dave Ramsey) | ~$5–6/employee/year = ~$0.42–0.50 PMPM | [ASSUMPTION — lower-end market] |
-| iGrad / EVERFI (university) | ~$1–5/student/year = ~$0.08–0.42 PMPM | [ASSUMPTION — university budgets are tighter] |
-| YNAB (consumer, for reference) | $9.08 PMPM | [DATA — published pricing] |
-| Monarch Money (consumer, for reference) | $8.33 PMPM | [DATA — published pricing] |
+No interviewee reacted to the exact bundled concept now in scope (Sunday Summary + self-calibrating budget + multi-account merge + AI chatbot). The closest evidence is the pricing gradient from three different people reacting to three different, narrower concepts:
 
-**Working range for modeling:**
-- Base case: $3 PMPM (university buyer, small contract)
-- Upside: $6 PMPM (employer buyer, mid-market)
-- Optimistic: $10 PMPM (employer buyer, premium positioning)
+| Source | Concept reacted to | Price named | Reliability |
+|---|---|---|---|
+| Tamara (Interview 3) | Passive summary, zero setup, no suggestions | $5–8/month | [DATA — stated reaction to a hypothetical, one person] |
+| Emily (Interview 5) | Light setup, overspend flags, margin-adjustment suggestions | ~$10/month, benchmarked to Spotify | [DATA — stated reaction, one person; strongest purchase intent in the project] |
+| Dooney (Interview 4) | Full dashboard, pie charts, cut-back suggestions | $15–20/month | [DATA — stated reaction, one person; different concept, not directly comparable] |
+| YNAB (consumer, for reference) | — | $9.08/month | [DATA — published pricing] |
+| Monarch Money (consumer, for reference) | — | $8.33/month | [DATA — published pricing] |
 
-**Revision note (June 24, 2026):** The original base case was $6 PMPM, assuming the first institutional contract would come from a mid-market employer. Stress-testing against realistic first-year conditions — no buyer contacted yet, sales cycles running 6–18 months, first movers more likely to be universities or small employers — revised the base case down to $3 PMPM. Every table below uses $3 as the base case; $6 is retained as an upside scenario, not the working assumption, until a buyer confirms it.
+**Working price for modeling: $7.99/month** — sits below the Tamara–Emily–Dooney gradient midpoint and below both YNAB and Monarch, on the reasoning that a new, unproven product should price slightly under established competitors even though this concept (with the chatbot) is arguably richer than anything those three interviewees actually saw.
 
-**What is untested:** No institution has been approached. No buyer has named a price. These ranges are competitive inference, not a quote. Do not treat the base case as validated until one institution signs a contract.
+**What is untested:** Whether $7.99 holds against the specific bundle now in scope. Whether the chatbot changes what someone will pay, versus the passive Sunday Summary alone — never asked. Whether people will pay before or only after experiencing the four-week trial.
 
 ---
 
 ## 2. Cost to Serve One Customer Per Month
 
-Costs are separated by type. Fixed costs are then allocated per user across different user base sizes.
+Costs are separated by type, and now apply identically to trial users and paying subscribers — the product is fully functional during the trial, so the cost to serve someone doesn't change when they start paying.
 
 ---
 
 ### A. Direct variable costs (per user, per month)
 
 **Bank data aggregation — Plaid**
-Plaid charges per connected account. Exact pricing is not publicly disclosed and varies by contract, but industry references and startup discussions consistently cite the range below.
-- Estimated: $0.30–0.60/user/month [ASSUMPTION — directionally accurate, not an official quote]
-- Used in model: **$0.45/user/month**
-- This cost applies to every connected user — free and institutional. It is unavoidable if the product connects to bank accounts.
+- Used in model: **$0.45/user/month** [ASSUMPTION — unchanged from prior model; industry-referenced, not an official quote]
+- Applies to every connected user, trial or paying. Unavoidable given the bank-linked architecture.
 
-**AI / LLM infrastructure**
-Generating a plain-language weekly spending summary for one user requires approximately 800 input tokens + 400 output tokens per summary, four summaries per month.
-- At current API pricing for a capable model: ~$0.002–0.009 per summary [DATA — based on published API token pricing]
-- Per month (4 summaries): ~$0.01–0.04/user/month
-- Used in model: **$0.03/user/month**
-- This is genuinely cheap. It is not a meaningful cost driver at early scale.
+**AI / LLM infrastructure — Sunday Summary generation**
+- ~800 input + 400 output tokens per summary, 4 summaries/month (weekly cadence).
+- Used in model: **$0.03/user/month** [DATA — based on published API token pricing; unchanged from prior model]
+
+**AI / LLM infrastructure — chatbot (NEW)**
+The pivot to include an AI chatbot for open-ended money questions adds a cost category the prior model did not have. Chatbot usage is open-ended rather than fixed-cadence, so this is a rougher estimate than the Sunday Summary cost above.
+- Assumption: ~15 chatbot exchanges/user/month, each requiring more context than a summary (categorized transactions + budget state) — roughly 2,000 input + 300 output tokens per exchange.
+- Estimated: **$0.15–0.40/user/month** [ASSUMPTION — no real usage data exists yet; this is the least-grounded cost line in the model]
+- Used in model: **$0.25/user/month**
+- **This needs to be revised as soon as the pilot group generates real chatbot usage data** — it is the single biggest unknown in the cost stack, both in typical exchange volume and in whether a cheaper model can be used for simpler questions.
 
 **Hosting and infrastructure (AWS or equivalent)**
-Database storage, API calls, server compute per active user.
-- Early stage (under 1,000 users): ~$0.15–0.50/user/month [ASSUMPTION — based on typical SaaS infrastructure costs at small scale]
-- Used in model: **$0.25/user/month**
-- Drops meaningfully at scale with reserved pricing.
+- Used in model: **$0.25/user/month** [ASSUMPTION — unchanged from prior model]
 
-**Payment processing (institutional invoices)**
-Institutional contracts are typically invoiced via ACH, not credit card. ACH transaction fees are low and charged per invoice, not per user.
-- ACH: ~$0.20–1.00/transaction [DATA — published ACH pricing ranges]
-- At 200 users per contract billed monthly: ~$0.003–0.005/user/month
-- Used in model: **$0.00/user/month** — negligible, rounds to zero at per-user level.
+**Email / push notification delivery**
+- Used in model: **$0.01/user/month** [DATA — transactional pricing; unchanged from prior model]
 
-**Storage, shipping, physical handling**
-Not applicable. This is a digital SaaS product. No physical components. [DATA]
+**Customer support time**
+- Used in model: **$0.15/user/month** [ASSUMPTION — 3% monthly contact rate, 20 min/contact, $15/hr; unchanged from prior model]
 
 **Total direct variable cost per user:**
 
 | Cost item | Monthly cost per user | Basis |
 |---|---|---|
 | Plaid (bank aggregation) | $0.45 | [ASSUMPTION] |
-| AI / LLM API | $0.03 | [DATA — token pricing] |
+| AI / LLM — Sunday Summary | $0.03 | [DATA — token pricing] |
+| AI / LLM — chatbot | $0.25 | [ASSUMPTION — no usage data yet] |
 | Hosting / infrastructure | $0.25 | [ASSUMPTION] |
-| Email delivery (weekly summaries) | $0.01 | [DATA — SendGrid transactional pricing] |
-| Customer support time | $0.15 | [ASSUMPTION — 3% monthly contact rate, 20 min/contact, $15/hr] |
-| Payment processing | ~$0.00 | [DATA — negligible] |
-| **Total variable** | **$0.89/user/month** | |
-
-**Revision note:** The original total of $0.73/user/month omitted email delivery and customer support time. Both were added after a full cost-category audit. All calculations below use $0.89/user/month.
+| Email / push delivery | $0.01 | [DATA] |
+| Customer support time | $0.15 | [ASSUMPTION] |
+| **Total variable** | **$1.14/user/month** | Up from $0.89 under the prior model, entirely due to the chatbot |
 
 ---
 
 ### B. Your time (valued at $15/hr)
 
-Founder time is real cost even when unpaid. At early stage it is often the largest cost in the model.
-
-Estimated weekly time allocation at early stage:
+Unchanged from the prior model — the founder-time estimate was never specific to the revenue model.
 
 | Activity | Hours/week | Hours/month | Monthly cost at $15/hr |
 |---|---|---|---|
 | Product development and maintenance | 15 | 60 | $900 |
-| Institutional sales and outreach | 10 | 40 | $600 |
+| Customer support / pilot feedback | 10 | 40 | $600 |
 | Compliance and legal coordination | 5 | 20 | $300 |
-| Customer success (institutional) | 5 | 20 | $300 |
-| Content / free user acquisition | 5 | 20 | $300 |
+| Content / acquisition | 10 | 40 | $600 |
 | **Total** | **40** | **160** | **$2,400/month** |
 
-[ASSUMPTION — hours are estimated. Track actual hours for two weeks and revise.]
-
-**Founder time allocated per user:**
-
-| User base | Monthly founder cost | Cost per user/month |
-|---|---|---|
-| 100 users | $2,400 | $24.00 |
-| 500 users | $2,400 | $4.80 |
-| 1,000 users | $2,400 | $2.40 |
-| 5,000 users | $2,400 | $0.48 |
-
-Founder time is the largest variable at small scale and drops fast as users grow. This is the most important reason to get to 1,000+ users before the math looks reasonable.
+[ASSUMPTION — hours are estimated. The "institutional sales and outreach" line from the prior model is replaced with consumer acquisition/content, since there's no institutional sales motion in the current plan.]
 
 ---
 
-### C. Customer acquisition cost (CAC)
+### C. Customer acquisition cost (CAC) — the new load-bearing unknown
 
-**Free users (consumer acquisition)**
-If relying on organic content (social media, referrals, no paid ads):
-- Content creation time: ~5 hrs/week = 20 hrs/month = $300/month in founder time
-- If 50 new free users/month from content: CAC = $6.00/free user [ASSUMPTION]
-- If 200 new free users/month: CAC = $1.50/free user [ASSUMPTION]
-- Free users generate $0 revenue. Their CAC is a sunk cost until an institution picks them up or they convert.
+Under B2B2C, CAC for the free consumer tier was a minor cost (organic content, ~$1.50–$6/free user) because the institution bore the cost of distributing to paying users. **Under direct-to-consumer subscription, the venture bears full acquisition cost for every paying subscriber — there is no institutional distribution to lean on.** This is a structurally different risk than the timing risk the B2B2C model had, and it has zero data behind it.
 
-**Institutional customers (B2B sales)**
-One institutional contract covers 50–500 users. The CAC is for the contract, then allocated across users.
-- Estimated founder time per institutional sale: 40–100 hours [ASSUMPTION — based on typical SMB/mid-market SaaS sales cycles]
-- At $15/hr: $600–$1,500 in founder time per contract [ASSUMPTION]
-- Plus any travel, conference attendance, or materials: $0–$500 [ASSUMPTION]
-- Total institutional CAC: ~$800–$2,000 per contract [ASSUMPTION]
-- Allocated across 200 users per contract: $4–$10 per user (one-time)
-- Amortized over 12-month contract: $0.33–$0.83/user/month
+- Cost per free-trial signup: unknown — depends entirely on channel (the three channel experiments in `channel-experiments.md` are all designed around free organic reach, not paid acquisition)
+- Trial-to-paid conversion rate: **unknown — zero data.** This is now the single most important number in the model, the same way institutional PMPM was the single most important number under the old model.
+- True CAC per paying subscriber = (cost to acquire one trial signup) ÷ (trial-to-paid conversion rate). If conversion is low, CAC per paying subscriber could be very high even if signups themselves are cheap.
+
+**What needs to be tested:** actual trial-to-paid conversion rate from the pilot group. Nothing else in this section can be estimated responsibly until that exists.
 
 ---
 
 ### D. Fixed costs per month (shared across all users)
 
-These costs exist regardless of how many users you have. They do not scale with users — but they must be covered by revenue from users.
+Unchanged from the prior model — SOC 2, insurance, legal, infrastructure, tools, and accounting costs don't depend on the revenue model.
 
 | Fixed cost | Monthly estimate | Basis |
 |---|---|---|
-| SOC 2 Type II certification (amortized) | $1,250–$3,333 | [ASSUMPTION — $15,000–$40,000/year; required to sell to institutions] |
-| Cyber liability insurance | $167–$500 | [ASSUMPTION — $2,000–$6,000/year for fintech with financial data] |
-| Data privacy legal / attorney retainer | $500–$1,500 | [ASSUMPTION — required ongoing, especially at launch] |
+| SOC 2 Type II certification (amortized) | $1,250–$3,333 | [ASSUMPTION] |
+| Cyber liability insurance | $167–$500 | [ASSUMPTION] |
+| Data privacy legal / attorney retainer | $500–$1,500 | [ASSUMPTION] |
 | Minimum infrastructure (baseline, 0 users) | $100–$200 | [ASSUMPTION] |
-| Plaid minimum access fee (if applicable) | $0–$500 | [ASSUMPTION — depends on Plaid tier; startup programs may waive] |
-| E&O / professional liability insurance | $42–$167 | [ASSUMPTION — required for a product offering financial guidance; added in cost audit] |
-| Software tools (GitHub, Figma, project management) | ~$100 | [ASSUMPTION — added in cost audit] |
-| Accounting / bookkeeping | ~$150 | [ASSUMPTION — required once institutional invoices exist; added in cost audit] |
-| Email service base fee, backup/data retention, business banking | ~$60 | [ASSUMPTION — added in cost audit] |
+| Plaid minimum access fee (if applicable) | $0–$500 | [ASSUMPTION] |
+| E&O / professional liability insurance | $42–$167 | [ASSUMPTION] |
+| Software tools (GitHub, Figma, project management) | ~$100 | [ASSUMPTION] |
+| Accounting / bookkeeping | ~$150 | [ASSUMPTION] |
+| Email service base fee, backup/data retention, business banking | ~$60 | [ASSUMPTION] |
 | **Total fixed costs** | **$2,369–$6,510/month** | |
 
-**Working fixed cost estimate: $3,980/month** [ASSUMPTION — revised after cost audit, up from the original $3,500 midpoint]
+**Working fixed cost estimate: $3,980/month** [ASSUMPTION — unchanged]
+
+**Founder time cost: $2,598/month** (40 hrs/week × 4.33 weeks/month × $15/hr — same rate and hours as the prior model, just reallocated across activities in section B above)
+
+**Total monthly overhead (fixed + founder time): $6,578/month** — unchanged from the prior model, since neither fixed costs nor founder time depend on the revenue model.
 
 ---
 
-## 3. Gross Margin Per Customer
+## 3. Gross Margin Per Subscriber
 
-### Free user
+### Free-trial user
 
 | Item | Amount |
 |---|---|
 | Revenue | $0.00 |
-| Variable cost | ($0.89) |
-| Gross margin | **($0.89)/month** |
+| Variable cost | ($1.14) |
+| Gross margin | **($1.14)/month, for up to 4 weeks** |
 
-Every free user costs $0.89/month in direct variable costs before founder time or fixed cost allocation. This is the drag the free tier creates. It is manageable at small scale; it becomes a real problem if the free tier grows large and institutional revenue does not follow.
+### Paying subscriber
 
-### Institutional user — variable cost margin only
+| Item | Amount |
+|---|---|
+| Revenue | $7.99 |
+| Variable cost | ($1.14) |
+| **Gross margin (variable only)** | **$6.85 (85.7%)** |
 
-| Scenario | Revenue (PMPM) | Variable cost | Gross margin | Gross margin % |
-|---|---|---|---|---|
-| Base case ($3) | $3.00 | $0.89 | $2.11 | 70% |
-| Upside ($6) | $6.00 | $0.89 | $5.11 | 85% |
-| Optimistic ($10) | $10.00 | $0.89 | $9.11 | 91% |
+This is a meaningfully higher variable-cost margin than any institutional PMPM tier in the prior model (70% at $3 PMPM, 91% at $10 PMPM optimistic) — direct consumer pricing captures more per user than an institutional per-member rate did, even after adding the chatbot's cost.
 
-Variable-cost gross margin is strong. This is normal for SaaS — the per-unit direct costs are low once the infrastructure exists. The problem is not the margin per user. It is reaching enough institutional users to cover fixed costs and founder time before cash runs out.
+### Fully-loaded margin (including founder time and fixed costs)
 
-### Institutional user — fully-loaded margin (including founder time and fixed costs)
+At 1,000 paying subscribers, $6,578/month overhead allocated at $6.58/subscriber/month:
 
-At 1,000 institutional users, $3,980/month fixed costs, $2,598/month founder time = $6,578/month overhead allocated at $6.58/user/month:
-
-| Scenario | Revenue | Variable cost | Overhead allocation | Fully-loaded margin | Margin % |
+| | Revenue | Variable cost | Overhead allocation | Fully-loaded margin | Margin % |
 |---|---|---|---|---|---|
-| Base case ($3) | $3.00 | $0.89 | $6.58 | **($4.47)** | Negative |
-| Upside ($6) | $6.00 | $0.89 | $6.58 | **($1.47)** | Negative |
-| Optimistic ($10) | $10.00 | $0.89 | $6.58 | **$2.53** | 25% |
+| At 1,000 subscribers | $7.99 | $1.14 | $6.58 | **$0.27** | 3% |
 
-At 1,000 institutional users, the model is only profitable at the optimistic pricing tier, and only marginally. Even the upside ($6) tier is still underwater at this scale. At the base case, you are losing more per user than revenue brings in. This is why user volume matters more than margin rate.
-
-At 3,000 institutional users, overhead drops to $2.19/user/month:
-
-| Scenario | Revenue | Variable cost | Overhead allocation | Fully-loaded margin | Margin % |
-|---|---|---|---|---|---|
-| Base case ($3) | $3.00 | $0.89 | $2.19 | **($0.08)** | Negative (essentially break-even) |
-| Upside ($6) | $6.00 | $0.89 | $2.19 | **$2.92** | 49% |
-| Optimistic ($10) | $10.00 | $0.89 | $2.19 | **$6.92** | 69% |
-
-3,000 institutional users is roughly 15 contracts of 200 users each. That is a meaningful milestone.
+Even at the working $7.99 price, 1,000 subscribers is barely profitable per-subscriber once overhead is allocated — the real question is reaching enough subscribers, not whether the per-subscriber economics work in isolation (they do, at 85.7% variable-cost margin).
 
 ---
 
 ## 4. Break-Even on Fixed Costs
 
-**Fixed costs to cover each month: ~$6,578** ($3,980 fixed + $2,598 founder time)
+**Fixed costs to cover each month: ~$6,578** (unchanged — this doesn't depend on the revenue model)
 
-This is the number that has to be exceeded by contribution margin (revenue minus variable costs) to break even.
+Contribution margin per paying subscriber = $7.99 − $1.14 = **$6.85**
 
-Contribution margin per institutional user = Revenue PMPM − $0.89 variable cost
+**Paying subscribers needed to break even: $6,578 ÷ $6.85 ≈ 961 subscribers**
 
-| PMPM rate | Contribution margin/user | Users to break even |
+This is dramatically fewer than the institutional model required (3,118 institutional users at the $3 PMPM base case) — direct subscription revenue per user is worth roughly 2.7× the old base case's contribution margin per user. **This does not mean the venture is closer to break-even in practice** — it means the bottleneck has moved from "close institutional contracts" (a slow, known sales-cycle problem) to "acquire and convert 961 individual paying subscribers" (a consumer acquisition and retention problem with zero data behind it yet).
+
+**What this number doesn't include:** customer acquisition cost, trial-period drag while a subscriber is still in their free four weeks, or subscription churn — all real costs that reduce the effective number of paying subscribers at any given time versus the cumulative number of people who ever signed up.
+
+---
+
+## 5. Free-Trial Drag and the Role of Conversion Rate
+
+Under B2B2C, free users were a *permanent* cost center — the hope was that an institution would eventually pay for some of them, but many never would. Under the subscription model, every subscriber passes through a *temporary* four-week trial drag and then either converts (starts generating $6.85/month contribution margin) or leaves (stops costing anything). This is a more forgiving dynamic than the old model's indefinite free-tier drag, but it makes conversion rate — not institutional sales cycle length — the single biggest lever in the model.
+
+| Trial users at any given time | Monthly variable cost | Notes |
 |---|---|---|
-| $3 (base case) | $2.11 | **3,118 users** |
-| $6 (upside) | $5.11 | **1,288 users** |
-| $10 (optimistic) | $9.11 | **722 users** |
+| 25 | $28.50 | Roughly the guinea-pig pilot scale |
+| 100 | $114 | |
+| 500 | $570 | |
 
-**Translated into institutional contracts** (assuming 200 users per contract):
-
-| PMPM rate | Users needed | Contracts needed | Monthly revenue at break-even |
-|---|---|---|---|
-| $3 (base case) | 3,118 | ~16 contracts | $9,354 |
-| $6 (upside) | 1,288 | ~7 contracts | $7,728 |
-| $10 (optimistic) | 722 | ~4 contracts | $7,220 |
-
-The base case requires 16 signed institutional contracts covering ~200 users each before you stop losing money on monthly operations. This does not include recovering CAC, building cash reserves, or paying yourself a market-rate salary.
-
-**How long does it take to reach 16 contracts?**
-At a realistic pace of one contract signed per quarter — already optimistic relative to the 6–18 month institutional sales cycle norm — 16 contracts takes 48 months (4 years) from first outreach. With 20% annual churn on signed contracts factored in, the timeline extends to roughly 60 months (5 years). [ASSUMPTION — based on typical institutional SaaS sales cycles; see the stress test in `financial-model.xlsx`]
-
-This is the central cash flow problem in the model. It does not mean the model fails. It means it requires either outside capital, a faster institutional sales cycle than industry norms, or a higher realized PMPM than the $3 base case to survive on a reasonable timeline. At $6 PMPM (the upside tier, not yet validated by any buyer), the same math produces 7 contracts and a 21-month timeline — which of those two numbers turns out to be real is the single biggest lever in this model.
+At any of these scales, the trial-period cost itself is small. The real cost is opportunity cost: time and acquisition spend on people who don't convert.
 
 ---
 
-## 5. The Free User Drag — Quantified
+## 6. Payback Period on Acquisition Cost
 
-Before institutional revenue arrives, you are likely running a free consumer tier to build a user base and prove engagement. Every free user costs $0.73/month in direct variable costs plus their share of fixed overhead.
-
-| Free users | Direct variable cost/month | Fixed overhead/month | Total monthly burn from free tier |
-|---|---|---|---|
-| 100 | $89 | $6,578 | $6,667 |
-| 500 | $445 | $6,578 | $7,023 |
-| 1,000 | $890 | $6,578 | $7,468 |
-
-The free user direct cost is not the killer — fixed costs are. But the free tier adds burn without revenue, which extends the runway you need before the first institutional check.
-
----
-
-## 6. Payback Period on One Institutional Contract
-
-If CAC per contract is $1,500 (midpoint of estimate) and the contract covers 200 users:
-
-| PMPM rate | Monthly contract revenue | Monthly variable cost (200 users) | Monthly contribution | Months to recover $1,500 CAC |
-|---|---|---|---|---|
-| $3 (base case) | $600 | $178 | $422 | 3.6 months |
-| $6 (upside) | $1,200 | $178 | $1,022 | 1.5 months |
-| $10 (optimistic) | $2,000 | $178 | $1,822 | 0.8 months |
-
-Payback on CAC is fast once the contract is signed. The problem is not the payback period — it is the 6–18 months of sales time before the contract closes.
+Payback period can't be calculated responsibly yet — it depends on CAC per paying subscriber, which depends on trial-to-paid conversion rate, which has zero data. Once the pilot group produces a real conversion number, this section should be rebuilt using: (cost to acquire one trial signup) ÷ conversion rate = CAC per paying subscriber, then CAC ÷ $6.85 monthly contribution margin = months to payback.
 
 ---
 
 ## 7. What This Means in Plain Language
 
-The unit economics of this model are structurally sound at the per-user level. High gross margin on variable costs is normal for SaaS. The model does not fail because users are unprofitable — they are profitable at almost any institutional price point.
+The pivot to direct-to-consumer subscription improves the per-subscriber economics substantially — 85.7% variable-cost gross margin and roughly 961 subscribers to cover fixed overhead, versus 3,118 institutional users under the old base case. That's the good news, and it's a real improvement, not just an optimistic reframing.
 
-The model fails if:
-1. **Institutional sales take too long.** At 18+ months per cycle, you burn runway before revenue arrives.
-2. **Contracts are too small.** A university offering free access to 50 graduating seniors at $3 PMPM is $150/month — not enough to matter.
-3. **The free tier grows faster than institutional revenue.** If you acquire 5,000 free users and sign zero institutional contracts, you are spending ~$4,450/month on direct costs with zero return.
-4. **Pricing lands in the university tier, not the employer tier.** This is already the base case, not a downside scenario — at $3 PMPM you need 16 contracts to break even. At $6 PMPM (unvalidated) you'd need 7. The difference between those two numbers is the single biggest swing factor in the model.
+The bad news is that the model now depends on a number that has never been tested even once: **trial-to-paid conversion rate.** The old model's biggest risk (institutional sales cycle length) was at least bounded by industry norms (6–18 months). Consumer subscription conversion rates vary enormously by product and execution — there's no equivalent industry anchor cited anywhere in this project's competitive research. This is the next number to chase, the same way institutional PMPM was the number to chase under the old model.
+
+The chatbot also introduces a cost the model has never had before, and it's the least-grounded number in this document ($0.25/user/month, estimated with no real usage data). If actual chatbot usage runs much higher than assumed — for example, if users treat it as a general-purpose AI assistant rather than a narrow money-questions tool — this cost line could grow well beyond what's currently modeled.
 
 ---
 
@@ -292,27 +223,27 @@ The model fails if:
 
 | Number | Status | How to validate |
 |---|---|---|
-| Institutional PMPM rate | [ASSUMPTION] — competitive estimate only | Speak with one HR benefits buyer and one financial aid director. Ask what they currently pay per user for comparable programs. |
-| Plaid cost per user | [ASSUMPTION] — ~$0.45/month approximate | Request a Plaid pricing call. Their startup program (Plaid Layer) may have different terms. |
-| Users per institutional contract | [ASSUMPTION] — 200 is a guess | Depends on employer size or university cohort. Could be 50 (small) or 1,000 (large). Changes break-even substantially. |
-| Institutional sales cycle length | [ASSUMPTION] — 6–18 months from industry norms | One conversation with a comparable SaaS founder who has sold to HR or university buyers. |
-| SOC 2 cost | [ASSUMPTION] — $15,000–$40,000/year | Request a quote from a SOC 2 audit firm (Vanta, Drata, or a traditional auditor). This is easy to get. |
-| Founder hours per week | [ASSUMPTION] — 40 hrs/week estimated | Track actual hours for two weeks. Reallocate the model. |
-| Free-to-institutional conversion | Not modeled — entirely unknown | What percentage of free users eventually fall under an institutional contract? No data exists. |
+| Trial-to-paid conversion rate | Not modeled — zero data | Track the guinea-pig pilot group through their 4-week trial and see how many convert. This is now the single most important number in the model. |
+| $7.99 subscription price | [ASSUMPTION] — founder-set, informed by but not tested against this bundled concept | Ask the pilot group directly, after they've used the Sunday Summary + chatbot, what they'd actually pay. |
+| Chatbot AI cost per user | [ASSUMPTION] — no usage data exists | Track real token usage from the pilot group's chatbot conversations. |
+| Consumer CAC (cost per trial signup, and per converted subscriber) | Not modeled — zero data | Run the channel experiments in `channel-experiments.md` and track actual signups and conversions, not just clicks. |
+| Plaid cost per user | [ASSUMPTION] — ~$0.45/month approximate | Request a Plaid pricing call, or check current Trial-plan/Production pricing directly with Plaid. |
+| Subscription churn rate | Not modeled — zero data | Only measurable once there's a real subscriber base and enough months of history. |
+| SOC 2 cost | [ASSUMPTION] — $15,000–$40,000/year | Request a quote from a SOC 2 audit firm (Vanta, Drata, or a traditional auditor). |
+| Founder hours per week | [ASSUMPTION] — 40 hrs/week estimated | Track actual hours, especially once the pilot is live and support/feedback load is real. |
 
 ---
 
 ## Summary Table
 
-| Metric | Base Case | Upside | Optimistic |
-|---|---|---|---|
-| Institutional PMPM rate | $3 | $6 | $10 |
-| Variable cost per user | $0.89 | $0.89 | $0.89 |
-| Gross margin per user (variable only) | $2.11 (70%) | $5.11 (85%) | $9.11 (91%) |
-| Monthly overhead (fixed + founder) | $6,578 | $6,578 | $6,578 |
-| Institutional users to break even | 3,118 | 1,288 | 722 |
-| Contracts needed (at 200 users/contract) | ~16 | ~7 | ~4 |
-| Months to break even (at 1 contract/quarter) | 48 months | 21 months | 12 months |
-| CAC payback (per contract) | 3.6 months | 1.5 months | 0.8 months |
+| Metric | Value |
+|---|---|
+| Subscription price | $7.99/month [ASSUMPTION] |
+| Free trial length | 4 weeks (4 Sunday Summaries) |
+| Variable cost per user | $1.14/month (up from $0.89 under the prior model, due to the chatbot) |
+| Gross margin per subscriber (variable only) | $6.85 (85.7%) |
+| Monthly overhead (fixed + founder) | $6,578 (unchanged from the prior model) |
+| Paying subscribers to break even | ~961 (down from ~3,118 institutional users under the old $3 PMPM base case) |
+| Biggest unknown | Trial-to-paid conversion rate — zero data, the new equivalent of the old model's untested institutional PMPM rate |
 
-[All numbers except published competitor pricing and AI token pricing are assumptions until validated by institutional conversations.]
+[All numbers except published competitor pricing and AI token pricing are assumptions until validated by the pilot group's actual usage and conversion behavior.]

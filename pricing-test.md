@@ -5,7 +5,24 @@
 
 ---
 
+## Revision note (July 2026) — priority has flipped
+
+Everything below this point is the original test plan, kept as a historical record of what was designed and run — not rewritten, since it documents real work and real interview data collected against it (see the "Update" sections near the end for Tamara, Dooney, and Emily's actual reactions).
+
+But the premise at the top of this document — "the institutional test is worth ten times as much" — no longer reflects the current plan. Following a founder-led product-scoping conversation, the revenue model has pivoted from Freemium → B2B2C to a **direct-to-consumer paid subscription at $7.99/month with a 4-week free trial**. Institutional pricing is now a deprioritized future path, not the active plan (see `VENTURE.md` and `business-model-canvas.md`).
+
+**What actually needs validating now, in order of importance:**
+1. **Trial-to-paid conversion rate** — the new equivalent of "institutional PMPM rate" as the single most load-bearing unknown in the model. Zero data exists. This is what the small guinea-pig pilot is meant to start answering.
+2. **Whether $7.99 holds against the specific bundled concept now in scope** (Sunday Summary + self-calibrating budget + multi-account merge + AI chatbot) — none of Tamara, Dooney, or Emily reacted to this exact bundle, so their $5–8 / ~$10 / $15–20 numbers are supporting evidence, not a direct test.
+3. **Whether people will pay after the 4-week trial, not before** — untested; the whole trial design assumes seeing value first changes the answer.
+
+The institutional pricing script below (Tuesday–Friday outreach plan) is not the current week's plan and shouldn't be executed as written. It's preserved for reference in case B2B2C is revisited later. See `unit-economics.md` for the full revised cost/break-even model under the subscription structure.
+
+---
+
 ## Why institutional pricing, not consumer pricing
+
+**(Historical — reflects the original June 2026 plan, superseded by the revision note above.)**
 
 The financial model has two unvalidated price points:
 
