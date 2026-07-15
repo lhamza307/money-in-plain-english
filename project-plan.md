@@ -1,10 +1,60 @@
 # Project Plan — Money in Plain English (App)
 
-Built from the product-scoping conversation defining the v1 build. See `VENTURE.md`, `unit-economics.md`, and `financial-model.xlsx` for the business context this plan sits inside.
+Built from the product-scoping conversation defining the v1 build. See `VENTURE.md`, `unit-economics.md`, and `financial-model.xlsx` for the business context this plan sits inside. Revised after a senior-engineer audit — see notes inline where something was added because the audit caught a real gap.
 
 ## Project Goal
 
 Build a bank-connected app that turns a person's spending into a weekly plain-language "Sunday Summary" with a specific suggestion, and validate — with a small trusted pilot — that it changes behavior and converts free-trial users into $7.99/month subscribers.
+
+---
+
+## Phase 0 — Technical Foundations
+
+*Added after audit: the original plan started at "import a CSV" as if an app already existed to import CSVs into. It didn't. Nothing below this point works without this phase.*
+
+- [ ] **0.1 Design the data model**
+  - [ ] Define entities: User, Account, Transaction, Category, Budget, Correction Rule
+  - [ ] Define relationships between them
+  - [ ] Decide on storage (SQL vs. NoSQL, etc.)
+  - **Dependencies:** None — first task in the project.
+  - **Acceptance criteria:** A written schema exists covering users, linked accounts, transactions, categories, budgets, and correction rules, with relationships defined.
+  - **Test:** Walk the planned CSV import flow through the schema on paper. Confirm every field Phase 1 will need (date, merchant, amount, category, account ID, source file) has a home before writing any import code.
+
+- [ ] **0.2 Build user accounts & authentication**
+  - [ ] Sign-up / login flow
+  - [ ] Session handling
+  - [ ] Per-user data isolation
+  - **Dependencies:** 0.1 (schema must define a User entity).
+  - **Acceptance criteria:** Two distinct test accounts can be created, log in independently, and each only ever sees their own data.
+  - **Test:** Create two test accounts, upload different data under each, and confirm neither account can see the other's transactions or budgets.
+
+- [ ] **0.3 Build the app shell**
+  - [ ] Base navigation shell (Inbox / Summaries / Chatbot tabs as routable, even if empty)
+  - [ ] Placeholder screens
+  - **Dependencies:** 0.2 (needs a logged-in user to land somewhere).
+  - **Acceptance criteria:** A logged-in test user can navigate between all planned tabs without the app crashing or losing session state.
+  - **Test:** Log in as a test user, tap through every planned tab, and confirm each loads (even empty) and the session survives navigation.
+
+- [ ] **0.4 Set up hosting & backend infrastructure**
+  - [ ] Hosting provider
+  - [ ] Database instance
+  - [ ] Basic deploy pipeline
+  - **Dependencies:** 0.1.
+  - **Acceptance criteria:** The app (even empty) is deployed somewhere reachable, and data written to the database survives a redeploy.
+  - **Test:** Deploy a trivial change, confirm it goes live, and confirm test data entered before the deploy is still there after.
+
+- [ ] **0.5 Set up error monitoring, crash reporting, and logging**
+  - [ ] Wire in a monitoring tool
+  - **Dependencies:** 0.3, 0.4.
+  - **Acceptance criteria:** A deliberately-triggered test error shows up in the monitoring tool with a usable stack trace.
+  - **Test:** Force a test crash in a test build and confirm it appears in the monitoring dashboard within a few minutes. **Do not start Phase 8 (guinea pig pilot) until this passes** — a 4-week trial with no visibility into what breaks is a wasted trial.
+
+- [ ] **0.6 Set up secure storage practices for financial data**
+  - [ ] Encryption at rest for transaction data
+  - [ ] Confirm no plaintext financial data ends up in logs
+  - **Dependencies:** 0.1, 0.4.
+  - **Acceptance criteria:** Transaction data in the database is encrypted at rest, and a log review confirms no raw account numbers or full transaction details appear in plaintext anywhere.
+  - **Test:** Import a test CSV, then search the application logs for that transaction's exact dollar amounts or merchant names. They should not appear.
 
 ---
 
@@ -15,24 +65,42 @@ The simplest thing that could work: get real transaction data into the app witho
 - [ ] **1.1 Define the category taxonomy**
   - [ ] List starter categories (food/dining, groceries, transportation, housing, subscriptions, shopping, debt payments, etc.)
   - [ ] Decide whether categories are fixed or user-editable in v1
-  - **Dependencies:** None — first task in the project.
+  - **Dependencies:** Phase 0 complete.
   - **Acceptance criteria:** A written, finite list of categories exists and every category has a clear definition of what belongs in it.
   - **Test:** Take 20 real transaction lines from a guinea pig's actual bank export and manually assign each one to a category by hand. If more than 1–2 transactions don't fit cleanly anywhere, the taxonomy is incomplete — revise before moving on.
 
-- [ ] **1.2 Build CSV upload**
-  - [ ] Upload UI (pick a file, confirm it loaded)
-  - [ ] Parse common export formats from guinea pigs' actual banks (columns, date formats, merchant name conventions)
-  - [ ] Handle malformed rows without crashing the whole import
-  - **Dependencies:** 1.1 (need categories to map into).
-  - **Acceptance criteria:** A real CSV exported from a guinea pig's bank or credit card portal uploads successfully and every transaction row appears in the app with the correct date, merchant, and amount.
-  - **Test:** Upload a real CSV from each guinea pig's actual bank. Manually total the dollar amount in the raw CSV and compare it to the total the app shows. They must match exactly. If a bank's format fails to parse, that's a blocking bug — fix before continuing.
+- [ ] **1.2 Collect real sample exports from each guinea pig's actual bank**
+  - [ ] Get at least one recent CSV export from every guinea pig before writing any parsing code
+  - **Dependencies:** None additional — can run in parallel with 1.1.
+  - **Acceptance criteria:** A real, recent CSV sample exists for every guinea pig's bank/card.
+  - **Test:** Open each sample file and confirm you can identify its column layout, date format, and merchant-name convention by hand before Phase 1.3 begins. Writing a parser before this step is backwards.
 
-- [ ] **1.3 Auto-categorize imported transactions**
+- [ ] **1.3 Build CSV upload**
+  - [ ] Upload UI (pick a file, confirm it loaded)
+  - [ ] Parse the actual formats collected in 1.2
+  - [ ] Handle malformed rows without crashing the whole import
+  - **Dependencies:** 1.1, 1.2.
+  - **Acceptance criteria:** A real CSV exported from a guinea pig's bank or credit card portal uploads successfully and every transaction row appears in the app with the correct date, merchant, and amount.
+  - **Test:** Upload a real CSV from each guinea pig's actual bank. Manually total the dollar amount in the raw CSV and compare it to the total the app shows. They must match exactly.
+
+- [ ] **1.4 Auto-categorize imported transactions**
   - [ ] Rule-based or keyword-matching categorization (merchant name → category)
   - [ ] Fallback "uncategorized" bucket for anything that doesn't match
-  - **Dependencies:** 1.1, 1.2.
+  - **Dependencies:** 1.1, 1.3.
   - **Acceptance criteria:** At least 80% of a real guinea pig's imported transactions land in a correct category without manual correction.
   - **Test:** Import one guinea pig's real CSV, manually review every transaction's assigned category, and count how many are wrong. If the error rate is above ~20%, categorization logic isn't ready for Phase 2 yet.
+
+- [ ] **1.5 Support multiple linked accounts per user**
+  - [ ] Tag each imported CSV/account with a distinct account identifier under one user
+  - **Dependencies:** 0.1 (schema must support multiple accounts per user), 1.3.
+  - **Acceptance criteria:** One user can upload two separate CSVs (e.g., checking + credit card) tagged to two distinct accounts, without either overwriting the other.
+  - **Test:** Upload two different CSVs under the same test user and confirm both sets of transactions are stored, correctly tagged by account, and neither overwrites the other. This is a real prerequisite for Phase 4.5's multi-account merge — don't skip it and discover the gap there.
+
+- [ ] **1.6 Handle repeat/overlapping CSV imports without double-counting**
+  - [ ] Detect and de-duplicate transactions that appear in more than one uploaded file
+  - **Dependencies:** 1.3.
+  - **Acceptance criteria:** Re-uploading a CSV that overlaps in date range with a previous upload doesn't create duplicate transactions or inflate category totals.
+  - **Test:** Upload a CSV, then upload a second CSV covering an overlapping date range (real bank exports commonly do this — e.g., "last 30 days" every time). Confirm the overlapping transactions appear once, not twice, and category totals don't double-count. Without this, the pace-check math in Phase 4 will lie to users.
 
 ---
 
@@ -44,15 +112,21 @@ The simplest thing that could work: get real transaction data into the app witho
   - [ ] Move a transaction to a different category
   - **Dependencies:** Phase 1 complete (need real, categorized transactions to correct).
   - **Acceptance criteria:** Tapping any transaction lets a user change its category or amount, and the change is reflected immediately in that week's totals.
-  - **Test:** Pick a transaction, change its category, and confirm the category-level totals (e.g., "dining" and "shopping" sums) update correctly to reflect the move.
+  - **Test:** Pick a transaction, change its category, and confirm the category-level totals update correctly to reflect the move.
 
-- [ ] **2.2 "Just this once" vs. "every time" rule learning**
+- [ ] **2.2 Merchant name normalization**
+  - [ ] Recognize the same real-world merchant across different raw formatting (e.g., "AMAZON.COM*RT4X2" vs. "AMZN Mktp US")
+  - **Dependencies:** 1.4.
+  - **Acceptance criteria:** Two transaction rows that are the same merchant but formatted differently are treated as the same merchant for rule-matching purposes.
+  - **Test:** Take two real transaction rows from different sample CSVs that are actually the same merchant but formatted differently, and confirm a correction rule applied to one also applies to the other. Without this, "every time" rules (2.3) silently stop working the moment a second account or a new bank format shows up.
+
+- [ ] **2.3 "Just this once" vs. "every time" rule learning**
   - [ ] Prompt appears after any manual correction
-  - [ ] "Every time" creates a standing rule keyed to that merchant
+  - [ ] "Every time" creates a standing rule keyed to that (normalized) merchant
   - [ ] Standing rules apply automatically to future imports
-  - **Dependencies:** 2.1.
+  - **Dependencies:** 2.1, 2.2.
   - **Acceptance criteria:** After choosing "every time" for a merchant correction, re-importing a CSV containing that same merchant auto-applies the corrected category with no manual re-entry.
-  - **Test:** Correct a miscategorized merchant and select "every time." Re-import (or simulate a new import of) a CSV containing that same merchant again. Confirm it's now categorized correctly without touching it — this is the actual test of the "gets more accurate over time" mechanic the whole product promises.
+  - **Test:** Correct a miscategorized merchant and select "every time." Re-import a CSV containing that same merchant again (including under a differently-formatted string, per 2.2). Confirm it's categorized correctly without touching it.
 
 ---
 
@@ -90,7 +164,7 @@ This is the product's central mechanic: retrospective data becomes forward guida
   - [ ] Generate a specific, actionable suggestion tied to that pattern
   - **Dependencies:** 4.1.
   - **Acceptance criteria:** Given a week of data with one clear standout pattern (e.g., a payday spending spike in dining), the system surfaces that specific pattern as the suggestion — not a generic tip, and not multiple competing suggestions.
-  - **Test:** Feed in a known spending pattern modeled on your own mock dataset (`spending-ab-test.html`'s payday-spike data). Confirm the generated suggestion correctly names the dining/delivery spike and proposes a concrete action (e.g., a waiting period), matching the "Version A" style already drafted in that file.
+  - **Test:** Feed in a known spending pattern modeled on your own mock dataset (`spending-ab-test.html`'s payday-spike data). Confirm the generated suggestion correctly names the dining/delivery spike and proposes a concrete action, matching the "Version A" style already drafted in that file.
 
 - [ ] **4.3 Tone selection (suggestion / pace-check / praise)**
   - [ ] Decision logic for which of the three tones applies each week
@@ -109,7 +183,7 @@ This is the product's central mechanic: retrospective data becomes forward guida
   - [ ] Build the separate per-account drill-down view
   - [ ] Assemble the full weekly summary (pace-check/suggestion/praise + category breakdown)
   - [ ] Schedule for every Sunday
-  - **Dependencies:** 4.4, and at least two linked accounts/CSVs for one test user (to actually test merging).
+  - **Dependencies:** 4.4, and Phase 1.5 (multi-account support) — the capability this task needs was a gap in the original plan; it's now built there instead of assumed here.
   - **Acceptance criteria:** One test user with two accounts (e.g., debit + credit) gets a single merged Sunday Summary reflecting combined category totals, plus a working toggle to view either account alone.
   - **Test:** Import two separate CSVs (e.g., a checking and a credit card export) for the same test user with an overlapping category (like dining on both). Confirm the merged summary's dining total equals the sum of both accounts' dining spend, and confirm the drill-down view can isolate just one account's numbers correctly.
 
@@ -119,7 +193,7 @@ This is the product's central mechanic: retrospective data becomes forward guida
 
 - [ ] **5.1 Short push notification**
   - [ ] Sunday-triggered push with a brief teaser message
-  - **Dependencies:** Phase 4.5 (a summary must exist to notify about).
+  - **Dependencies:** Phase 4.5 (a summary must exist to notify about), Phase 0.3 (app shell).
   - **Acceptance criteria:** A test device receives a push notification on the scheduled Sunday send time.
   - **Test:** Manually trigger the Sunday job for a test account and confirm the push notification actually arrives on a real device within a reasonable delay.
 
@@ -139,35 +213,55 @@ This is the product's central mechanic: retrospective data becomes forward guida
 
 ## Phase 6 — AI Chatbot
 
-- [ ] **6.1 Chatbot grounded in the user's own data**
-  - [ ] Answer questions about the user's real categorized transactions and budget ("how much have I spent on dining this month?")
-  - **Dependencies:** Phase 1–3 (needs categorized transactions and budget data to reason over).
-  - **Acceptance criteria:** The chatbot answers a data-specific question correctly, using the same numbers the Sunday Summary and category views show.
-  - **Test:** Ask the chatbot 5 known-answer questions about a test account's real data (e.g., "how much did I spend on groceries this week?") and manually verify each answer against the actual computed total. All 5 must match before moving on.
-
-- [ ] **6.2 Resolve chatbot scope (open decision)**
+- [ ] **6.1 Resolve chatbot scope (open decision)**
   - [ ] Decide: personal-data-only, or also general financial advice questions
-  - **Dependencies:** 6.1.
-  - **Acceptance criteria:** A written decision exists and is reflected in what the chatbot will and won't attempt to answer (this was explicitly left unresolved in the scoping conversation — do not skip it).
-  - **Test:** Ask the chatbot an out-of-scope general-advice question (e.g., "should I pay off my credit card or save first?"). Confirm its behavior matches whatever was decided — either a scoped, careful general answer, or a clear redirect back to its own-data purpose.
+  - **Dependencies:** None additional beyond Phase 1–3 data existing to reason about.
+  - **Acceptance criteria:** A written decision exists covering what the chatbot will and won't attempt to answer, made *before* building it — this determines the system prompt design and whether any safety/guardrail work is needed for advice-type responses.
+  - **Test:** The decision is documented and reviewed before Phase 6.2 begins. If 6.2 starts without this, the chatbot gets built once and probably rebuilt once the scope question finally gets answered.
+
+- [ ] **6.2 Build the chatbot, grounded in the user's own data**
+  - [ ] Answer questions about the user's real categorized transactions and budget ("how much have I spent on dining this month?")
+  - [ ] Respect the scope boundary decided in 6.1
+  - **Dependencies:** 6.1, and Phase 1–3 (needs categorized transactions and budget data to reason over).
+  - **Acceptance criteria:** The chatbot answers a data-specific question correctly, using the same numbers the Sunday Summary and category views show, and behaves as decided in 6.1 when asked an out-of-scope question.
+  - **Test:** Ask the chatbot 5 known-answer questions about a test account's real data and manually verify each answer against the actual computed total. Then ask one out-of-scope general-advice question and confirm its behavior matches the 6.1 decision.
 
 ---
 
 ## Phase 7 — Subscription Billing & Trial Gate
 
-- [ ] **7.1 4-week free trial tracking**
+- [ ] **7.1 Decide the payment rail**
+  - [ ] Apple/Google in-app purchase vs. a web-based checkout (e.g., Stripe)
+  - **Dependencies:** None additional — must be decided before any billing code is written.
+  - **Acceptance criteria:** A written decision exists, with the tradeoff stated plainly: in-app purchase costs 30% off the top per Apple/Google's standard terms; a web checkout avoids that fee but adds friction (directing users outside the app) and, on iOS, is subject to App Store review restrictions on how that's presented.
+  - **Test:** The decision is documented and read by whoever builds 7.2/7.3 before they start. This was flagged in your own cost model as a decision to make before building, not after — don't repeat that mistake here.
+
+- [ ] **7.2 4-week free trial tracking**
   - [ ] Start the trial clock at signup
   - [ ] Track which Sunday Summary number (1–4) a user is on
   - **Dependencies:** Phase 4.5 (summaries must exist to count).
   - **Acceptance criteria:** A test account correctly shows "trial, week 2 of 4" (etc.) at the right point in its lifecycle.
   - **Test:** Create a test account and manually trigger 4 Sunday Summary cycles. Confirm the trial-week counter increments correctly each time and reaches "trial complete" after the 4th.
 
-- [ ] **7.2 Paywall + subscription billing**
-  - [ ] Charge $7.99/month once the trial ends
+- [ ] **7.3 Paywall + subscription billing**
+  - [ ] Charge $7.99/month once the trial ends, via the rail decided in 7.1
   - [ ] Handle payment failure / retry
-  - **Dependencies:** 7.1.
+  - **Dependencies:** 7.1, 7.2.
   - **Acceptance criteria:** A test account is correctly prompted to subscribe after its 4th Sunday Summary, and a test payment successfully processes.
   - **Test:** Run a test account through to "trial complete" and confirm the paywall appears. Process one real test transaction (sandbox/test mode) and confirm it completes and the account's status updates to "paying subscriber."
+
+---
+
+## Pre-Pilot Checklist
+
+*Before touching a single real guinea pig, confirm every item below. These are the things the audit caught that are easy to lose track of once you're heads-down building features — check them off here, not just in the phase they came from.*
+
+- [ ] Error monitoring confirmed working end-to-end (0.5)
+- [ ] Secure data storage confirmed — encryption at rest, no plaintext financial data in logs (0.6)
+- [ ] CSV de-duplication tested with real overlapping exports, not just synthetic data (1.6)
+- [ ] Merchant normalization tested across every guinea pig's actual bank format, not just one (2.2)
+- [ ] Payment rail decided and billing tested end-to-end, including a failed-payment case (7.1–7.3)
+- [ ] Multi-account support tested for any guinea pig who actually has more than one account (1.5, 4.5)
 
 ---
 
@@ -177,7 +271,7 @@ This is the product's central mechanic: retrospective data becomes forward guida
   - [ ] Each guinea pig uploads a real CSV
   - [ ] Each sets up their budget
   - [ ] Each receives at least one real Sunday Summary
-  - **Dependencies:** Phases 1–7 all complete and passing their own tests.
+  - **Dependencies:** Phases 0–7 all complete and passing their own tests, plus the Pre-Pilot Checklist above.
   - **Acceptance criteria:** Every guinea pig completes onboarding end-to-end with no blocking bugs.
   - **Test:** Walk each guinea pig through the full flow (import → budget → first Sunday Summary → chatbot question) and confirm none of them get stuck at any step.
 
