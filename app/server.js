@@ -1,5 +1,7 @@
-// Trivial change to trigger a real Render redeploy for Phase 0.4's
-// acceptance test (data survives a redeploy).
+// Must load before any other module -- Sentry's auto-instrumentation
+// depends on load order (Phase 0.5).
+const Sentry = require('./instrument');
+
 const express = require('express');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
@@ -117,6 +119,28 @@ app.get('/api/my-budgets', requireLogin, (req, res) => {
   const rows = db.prepare('SELECT id, category_id, amount_cents, effective_from FROM budgets WHERE user_id = ?')
     .all(req.session.userId);
   res.json(rows);
+});
+
+// Deliberately throws, for Phase 0.5's acceptance test: confirm a
+// real crash shows up in the monitoring dashboard with a stack trace.
+// Login-gated so it's not a public denial-of-service knob.
+app.get('/api/debug-crash', requireLogin, (req, res) => {
+  throw new Error('Phase 0.5 test crash -- deliberately triggered, expected to appear in Sentry.');
+});
+
+// Must be registered after all routes, before any other error
+// handler, per Sentry's current Express integration. This only
+// reports to Sentry -- it doesn't shape the client response.
+Sentry.setupExpressErrorHandler(app);
+
+// Final handler: Express's own default error page leaks the full
+// server file path and stack trace straight to the client, which is
+// a real information-disclosure problem for anything public. Sentry
+// already has the full detail from the handler above; the client
+// only ever gets a generic message.
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({ error: 'Something went wrong.' });
 });
 
 const PORT = process.env.PORT || 3000;

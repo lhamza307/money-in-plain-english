@@ -12,6 +12,7 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "@sentry/node": "^10.68.0",
     "bcrypt": "^6.0.0",
     "better-sqlite3": "^13.0.1",
     "express": "^5.2.1",

@@ -17,3 +17,6 @@ services:
         generateValue: true
       - key: NODE_ENV
         value: production
+      - key: SENTRY_DSN
+        value: ""
+        sync: false
