@@ -38,13 +38,14 @@ Build a bank-connected app that turns a person's spending into a weekly plain-la
   - **Test:** Log in as a test user, tap through every planned tab, and confirm each loads (even empty) and the session survives navigation.
   - **Done:** `app/public/{inbox,summaries,chatbot}.html`, shared `nav.js`/`shell.css`. Verified all three tabs load and the session (`/api/me`) stays valid across each. Known gap, not blocking: route protection is client-side only (nav.js redirects on a failed auth check) — the static HTML itself isn't server-gated. No real data exposed since these are placeholders, but worth hardening before Phase 8.
 
-- [ ] **0.4 Set up hosting & backend infrastructure**
-  - [ ] Hosting provider
-  - [ ] Database instance
-  - [ ] Basic deploy pipeline
+- [x] **0.4 Set up hosting & backend infrastructure**
+  - [x] Hosting provider
+  - [x] Database instance
+  - [x] Basic deploy pipeline
   - **Dependencies:** 0.1.
   - **Acceptance criteria:** The app (even empty) is deployed somewhere reachable, and data written to the database survives a redeploy.
   - **Test:** Deploy a trivial change, confirm it goes live, and confirm test data entered before the deploy is still there after.
+  - **Done:** Render (Starter, $7.25/mo total with disk), `render.yaml`. Live at `money-in-plain-english-app.onrender.com`. Fixed a real bug found before deploying: `server.js` wiped the database on every process start, which would have destroyed production data on every redeploy. Verified for real: signed up a test account, pushed a code change, confirmed the deploy went live, confirmed the account created before the redeploy still existed after.
 
 - [ ] **0.5 Set up error monitoring, crash reporting, and logging**
   - [ ] Wire in a monitoring tool
