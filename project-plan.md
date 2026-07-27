@@ -47,11 +47,12 @@ Build a bank-connected app that turns a person's spending into a weekly plain-la
   - **Test:** Deploy a trivial change, confirm it goes live, and confirm test data entered before the deploy is still there after.
   - **Done:** Render (Starter, $7.25/mo total with disk), `render.yaml`. Live at `money-in-plain-english-app.onrender.com`. Fixed a real bug found before deploying: `server.js` wiped the database on every process start, which would have destroyed production data on every redeploy. Verified for real: signed up a test account, pushed a code change, confirmed the deploy went live, confirmed the account created before the redeploy still existed after.
 
-- [ ] **0.5 Set up error monitoring, crash reporting, and logging**
-  - [ ] Wire in a monitoring tool
+- [x] **0.5 Set up error monitoring, crash reporting, and logging**
+  - [x] Wire in a monitoring tool
   - **Dependencies:** 0.3, 0.4.
   - **Acceptance criteria:** A deliberately-triggered test error shows up in the monitoring tool with a usable stack trace.
   - **Test:** Force a test crash in a test build and confirm it appears in the monitoring dashboard within a few minutes. **Do not start Phase 8 (guinea pig pilot) until this passes** — a 4-week trial with no visibility into what breaks is a wasted trial.
+  - **Done:** Sentry (free tier), `app/instrument.js`, login-gated `/api/debug-crash` test route. Verified live: triggered the crash on the production deploy, confirmed it appeared in Sentry within minutes with a full stack trace (`server.js:128:9`), correct environment and release tag. Real bug found and fixed before this went live: the default Express error page was leaking the full server file path and stack trace directly to the client — now returns a generic message to the client while Sentry/server logs still get the full detail.
 
 - [ ] **0.6 Set up secure storage practices for financial data**
   - [ ] Encryption at rest for transaction data
