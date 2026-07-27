@@ -1,3 +1,5 @@
+// Trivial change to trigger a real Render redeploy for Phase 0.4's
+// acceptance test (data survives a redeploy).
 const express = require('express');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
