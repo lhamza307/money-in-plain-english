@@ -12,28 +12,31 @@ Build a bank-connected app that turns a person's spending into a weekly plain-la
 
 *Added after audit: the original plan started at "import a CSV" as if an app already existed to import CSVs into. It didn't. Nothing below this point works without this phase.*
 
-- [ ] **0.1 Design the data model**
-  - [ ] Define entities: User, Account, Transaction, Category, Budget, Correction Rule
-  - [ ] Define relationships between them
-  - [ ] Decide on storage (SQL vs. NoSQL, etc.)
+- [x] **0.1 Design the data model**
+  - [x] Define entities: User, Account, Transaction, Category, Budget, Correction Rule
+  - [x] Define relationships between them
+  - [x] Decide on storage (SQL vs. NoSQL, etc.)
   - **Dependencies:** None — first task in the project.
   - **Acceptance criteria:** A written schema exists covering users, linked accounts, transactions, categories, budgets, and correction rules, with relationships defined.
   - **Test:** Walk the planned CSV import flow through the schema on paper. Confirm every field Phase 1 will need (date, merchant, amount, category, account ID, source file) has a home before writing any import code.
+  - **Done:** `app/schema.sql`, `app/data-model.md`. Verified against a real SQLite database, not just on paper — all 6 entities, the dedup UNIQUE constraint, budget history, and the uncategorized fallback all confirmed working.
 
-- [ ] **0.2 Build user accounts & authentication**
-  - [ ] Sign-up / login flow
-  - [ ] Session handling
-  - [ ] Per-user data isolation
+- [x] **0.2 Build user accounts & authentication**
+  - [x] Sign-up / login flow
+  - [x] Session handling
+  - [x] Per-user data isolation
   - **Dependencies:** 0.1 (schema must define a User entity).
   - **Acceptance criteria:** Two distinct test accounts can be created, log in independently, and each only ever sees their own data.
   - **Test:** Create two test accounts, upload different data under each, and confirm neither account can see the other's transactions or budgets.
+  - **Done:** `app/server.js`, `app/public/{signup,login,dashboard}.html`. Verified with real signup/login/logout, and cross-user isolation checked on accounts, transactions, and budgets (not just accounts, which was the initial gap caught during verification).
 
-- [ ] **0.3 Build the app shell**
-  - [ ] Base navigation shell (Inbox / Summaries / Chatbot tabs as routable, even if empty)
-  - [ ] Placeholder screens
+- [x] **0.3 Build the app shell**
+  - [x] Base navigation shell (Inbox / Summaries / Chatbot tabs as routable, even if empty)
+  - [x] Placeholder screens
   - **Dependencies:** 0.2 (needs a logged-in user to land somewhere).
   - **Acceptance criteria:** A logged-in test user can navigate between all planned tabs without the app crashing or losing session state.
   - **Test:** Log in as a test user, tap through every planned tab, and confirm each loads (even empty) and the session survives navigation.
+  - **Done:** `app/public/{inbox,summaries,chatbot}.html`, shared `nav.js`/`shell.css`. Verified all three tabs load and the session (`/api/me`) stays valid across each. Known gap, not blocking: route protection is client-side only (nav.js redirects on a failed auth check) — the static HTML itself isn't server-gated. No real data exposed since these are placeholders, but worth hardening before Phase 8.
 
 - [ ] **0.4 Set up hosting & backend infrastructure**
   - [ ] Hosting provider

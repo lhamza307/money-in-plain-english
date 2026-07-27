@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: money-in-plain-english-app
+    runtime: node
+    plan: starter
+    rootDir: app
+    buildCommand: npm install
+    startCommand: npm start
+    disk:
+      name: app-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: DB_PATH
+        value: /var/data/dev.sqlite3
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: NODE_ENV
+        value: production
