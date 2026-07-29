@@ -15,6 +15,8 @@ services:
         value: /var/data/dev.sqlite3
       - key: SESSION_SECRET
         generateValue: true
+      - key: ENCRYPTION_KEY
+        generateValue: true
       - key: NODE_ENV
         value: production
       - key: SENTRY_DSN

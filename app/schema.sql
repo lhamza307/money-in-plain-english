@@ -21,12 +21,18 @@ CREATE TABLE accounts (
   created_at   TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
--- Fixed v1 taxonomy (Phase 1.1). Global, not per-user, until that task
--- explicitly decides otherwise -- not pre-deciding it here.
+-- Fixed v1 taxonomy (Phase 1.1, see category-taxonomy.md -- brand-guide.md's
+-- "no categories to maintain" promise is why this is fixed rather than
+-- user-editable). Global, not per-user, since 1.1 didn't decide otherwise.
+-- is_spend_category = 0 for Income / Transfers Between Your Accounts --
+-- lets any budget/pace-check query exclude non-spend rows by a WHERE
+-- clause instead of relying on every future query remembering to skip
+-- them by name.
 CREATE TABLE categories (
-  id          INTEGER PRIMARY KEY AUTOINCREMENT,
-  name        TEXT NOT NULL UNIQUE,
-  description TEXT NOT NULL
+  id                 INTEGER PRIMARY KEY AUTOINCREMENT,
+  name               TEXT NOT NULL UNIQUE,
+  description        TEXT NOT NULL,
+  is_spend_category  INTEGER NOT NULL DEFAULT 1 CHECK (is_spend_category IN (0, 1))
 );
 
 -- One row per uploaded CSV file (Phase 1.2/1.3). Exists so every
@@ -39,19 +45,27 @@ CREATE TABLE import_batches (
   uploaded_at       TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
--- The core record. amount_cents avoids floating-point rounding errors
--- on money math. dedup_fingerprint is a hash of
--- (account_id, date, amount_cents, raw_merchant) -- the UNIQUE constraint
--- is what actually enforces Phase 1.6 (no double-counting on overlapping
+-- The core record. dedup_fingerprint is a hash of
+-- (account_id, date, amount_cents, raw_merchant) computed from the
+-- plaintext values before encryption -- the UNIQUE constraint is what
+-- actually enforces Phase 1.6 (no double-counting on overlapping
 -- re-imports) at the database level, not just in application code.
+--
+-- raw_merchant, normalized_merchant, and amount_cents hold AES-256-GCM
+-- ciphertext (base64 text), not plaintext (Phase 0.6 -- encryption at
+-- rest for financial data). See crypto.js. amount_cents is TEXT rather
+-- than INTEGER for this reason: it can no longer be summed or filtered
+-- in SQL, only after the application decrypts it. date and category_id
+-- stay plaintext on purpose, so date-range/category queries (Phase 3/4)
+-- can still run in SQL.
 CREATE TABLE transactions (
   id                    INTEGER PRIMARY KEY AUTOINCREMENT,
   account_id            INTEGER NOT NULL REFERENCES accounts(id),
   import_batch_id       INTEGER NOT NULL REFERENCES import_batches(id),
   date                  TEXT NOT NULL,             -- ISO 8601, e.g. 2026-07-14
-  raw_merchant          TEXT NOT NULL,              -- exactly as the bank exported it
-  normalized_merchant   TEXT NOT NULL,               -- Phase 2.2 output
-  amount_cents          INTEGER NOT NULL,            -- negative = money out
+  raw_merchant          TEXT NOT NULL,              -- encrypted; exactly as the bank exported it
+  normalized_merchant   TEXT NOT NULL,               -- encrypted; Phase 2.2 output
+  amount_cents          TEXT NOT NULL,               -- encrypted; negative = money out
   category_id           INTEGER REFERENCES categories(id), -- NULL = uncategorized (Phase 1.4 fallback)
   is_manually_corrected INTEGER NOT NULL DEFAULT 0 CHECK (is_manually_corrected IN (0, 1)),
   dedup_fingerprint     TEXT NOT NULL UNIQUE,

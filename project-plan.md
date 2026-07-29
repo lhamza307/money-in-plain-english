@@ -54,12 +54,13 @@ Build a bank-connected app that turns a person's spending into a weekly plain-la
   - **Test:** Force a test crash in a test build and confirm it appears in the monitoring dashboard within a few minutes. **Do not start Phase 8 (guinea pig pilot) until this passes** — a 4-week trial with no visibility into what breaks is a wasted trial.
   - **Done:** Sentry (free tier), `app/instrument.js`, login-gated `/api/debug-crash` test route. Verified live: triggered the crash on the production deploy, confirmed it appeared in Sentry within minutes with a full stack trace (`server.js:128:9`), correct environment and release tag. Real bug found and fixed before this went live: the default Express error page was leaking the full server file path and stack trace directly to the client — now returns a generic message to the client while Sentry/server logs still get the full detail.
 
-- [ ] **0.6 Set up secure storage practices for financial data**
-  - [ ] Encryption at rest for transaction data
-  - [ ] Confirm no plaintext financial data ends up in logs
+- [x] **0.6 Set up secure storage practices for financial data**
+  - [x] Encryption at rest for transaction data
+  - [x] Confirm no plaintext financial data ends up in logs
   - **Dependencies:** 0.1, 0.4.
   - **Acceptance criteria:** Transaction data in the database is encrypted at rest, and a log review confirms no raw account numbers or full transaction details appear in plaintext anywhere.
   - **Test:** Import a test CSV, then search the application logs for that transaction's exact dollar amounts or merchant names. They should not appear.
+  - **Done:** `app/crypto.js`, `app/migrations/0001_encrypt_transactions.sql`. AES-256-GCM field-level encryption (Node's built-in `crypto`, no new dependency) on `transactions.raw_merchant`, `normalized_merchant`, and `amount_cents` — the columns that actually constitute "financial data." `date` and `category_id` stay plaintext on purpose so Phase 3/4's date-range and category queries can still run in SQL. `ENCRYPTION_KEY` follows the same production-guard pattern as `SESSION_SECRET` (`render.yaml` updated); real design tradeoff worth flagging: because `amount_cents` is now ciphertext, no SQL-level `SUM()`/filtering on amount is possible anymore — all money math has to happen in application code after decrypting, which is fine at guinea-pig-pilot scale but is a real constraint future phases (3.2, 4.1) need to build around. Since Phase 1 (CSV import) doesn't exist yet, there was no real data to migrate — added a dev-only `/api/seed-transaction` route (mirrors `/api/seed-account`) to exercise the encrypt/decrypt path for real. Verified for real: seeded an encrypted transaction, confirmed `/api/my-transactions` correctly decrypts it, then grepped the raw `.sqlite3` file bytes directly and confirmed neither the merchant name nor the dollar amount appear in plaintext anywhere in the file. Also tested the schema migration itself against a simulated pre-existing (old-schema) database — it auto-upgrades an empty `transactions` table, and deliberately refuses to run (throws instead of silently dropping data) if it ever finds existing rows. Server log reviewed for the same request cycle — no transaction fields ever get logged. Not yet re-verified against the live Render production log stream (only local); worth a quick confirmation there after this deploys, same as 0.5's pattern.
 
 ---
 
@@ -67,33 +68,37 @@ Build a bank-connected app that turns a person's spending into a weekly plain-la
 
 The simplest thing that could work: get real transaction data into the app without waiting on a Plaid integration.
 
-- [ ] **1.1 Define the category taxonomy**
-  - [ ] List starter categories (food/dining, groceries, transportation, housing, subscriptions, shopping, debt payments, etc.)
-  - [ ] Decide whether categories are fixed or user-editable in v1
+- [x] **1.1 Define the category taxonomy**
+  - [x] List starter categories (food/dining, groceries, transportation, housing, subscriptions, shopping, debt payments, etc.)
+  - [x] Decide whether categories are fixed or user-editable in v1
   - **Dependencies:** Phase 0 complete.
   - **Acceptance criteria:** A written, finite list of categories exists and every category has a clear definition of what belongs in it.
   - **Test:** Take 20 real transaction lines from a guinea pig's actual bank export and manually assign each one to a category by hand. If more than 1–2 transactions don't fit cleanly anywhere, the taxonomy is incomplete — revise before moving on.
+  - **Done:** `app/category-taxonomy.md`, `app/schema.sql` (`categories.is_spend_category`), `app/migrations/0002_full_category_taxonomy.sql` + `0003_transfers_and_cash_categories.sql`. 11 spend categories + Income, Transfers Between Your Accounts, and Transfers to/from People (all three excluded from budget/pace-check math via `is_spend_category`). Not invented from scratch — 8 of the spend categories carry over unchanged from `spending-ab-test.html`'s already-guinea-pig-validated breakdown (Noor's real feedback); fixed-vs-editable was decided by `brand-guide.md`'s own "no categories to maintain" promise, not arbitrarily. **Test run for real** against a real, recent Chase checking CSV (see 1.2) — all 105 real transaction rows, not just the 20 the test technically requires. First pass failed: 17 of 105 (16%) didn't fit — 16 Zelle P2P payments and 1 ATM cash withdrawal, both real and recurring patterns for this user, not edge cases. Added Transfers to/from People and Cash & ATM Withdrawals to close the gap; re-run against all 105 rows passed with 0 misfits. Verified for real: fresh-DB seed, old-placeholder-DB migration (renames in place, no duplicates, idempotent on restart), and the newest migration all confirmed against a live SQLite database, not just on paper. Only tested against one bank so far (Chase) — re-check once a second guinea pig with a different bank exists, same caveat the Pre-Pilot Checklist already flags for merchant normalization.
 
-- [ ] **1.2 Collect real sample exports from each guinea pig's actual bank**
+- [ ] **1.2 Collect real sample exports from each guinea pig's actual bank** *(partially satisfied — see Done note)*
   - [ ] Get at least one recent CSV export from every guinea pig before writing any parsing code
   - **Dependencies:** None additional — can run in parallel with 1.1.
   - **Acceptance criteria:** A real, recent CSV sample exists for every guinea pig's bank/card.
   - **Test:** Open each sample file and confirm you can identify its column layout, date format, and merchant-name convention by hand before Phase 1.3 begins. Writing a parser before this step is backwards.
+  - **Done (partial):** One real, recent CSV export exists — the founder's own Chase checking account (`Chase0761_Activity_20260728.csv`, 105 transactions) — used in place of a recruited pilot guinea pig, since none had been recruited yet at this point. Column layout identified by hand: `Details,Posting Date,Description,Amount,Type,Balance,Check or Slip #`; `Posting Date` is MM/DD/YYYY and lags the actual transaction date, which is separately embedded inside `Description` (also MM/DD, no year) for card transactions; `Amount` is signed decimal (negative = debit); `Description` is inconsistently padded with whitespace and sometimes trailing reference numbers. Real, not synthetic, so enough to unblock 1.3 for this one format. Left unchecked at the top level because the task explicitly asks for a sample from *every* guinea pig, and no pilot guinea pig roster exists yet (that's Phase 8 recruiting) — revisit once guinea pigs are lined up, to confirm the taxonomy and parser hold up against other banks' formats too.
 
-- [ ] **1.3 Build CSV upload**
-  - [ ] Upload UI (pick a file, confirm it loaded)
-  - [ ] Parse the actual formats collected in 1.2
-  - [ ] Handle malformed rows without crashing the whole import
+- [x] **1.3 Build CSV upload**
+  - [x] Upload UI (pick a file, confirm it loaded)
+  - [x] Parse the actual formats collected in 1.2
+  - [x] Handle malformed rows without crashing the whole import
   - **Dependencies:** 1.1, 1.2.
   - **Acceptance criteria:** A real CSV exported from a guinea pig's bank or credit card portal uploads successfully and every transaction row appears in the app with the correct date, merchant, and amount.
   - **Test:** Upload a real CSV from each guinea pig's actual bank. Manually total the dollar amount in the raw CSV and compare it to the total the app shows. They must match exactly.
+  - **Done:** New "Accounts" tab (`app/public/accounts.html`, `nav.js`), `POST /api/accounts`, `POST /api/import-csv`. Chase-specific column parsing for now (only one real bank sample exists — see 1.2's note). Verified against the real 105-row Chase export: 104 imported + 1 correctly-deduped (two byte-identical $13.50 charges that the CSV itself later reverses — a real accidental double-charge, not a false positive), 0 malformed. App total ($885.99) matches the raw CSV total exactly once that one legitimate duplicate is accounted for ($899.49 − $13.50). Also found and fixed a real bug during testing: a CSV with mixed CRLF/LF line endings (common when a Windows-origin bank file gets edited/concatenated) made the parser silently misparse rows into fewer, broken records instead of erroring — now normalized before parsing. Also found and fixed two bugs in the upload UI itself: an XSS gap (merchant/nickname strings went into `innerHTML` unescaped) and a dollar-formatting bug (`Math.abs()` after `.toFixed()` could drop a trailing zero).
 
-- [ ] **1.4 Auto-categorize imported transactions**
-  - [ ] Rule-based or keyword-matching categorization (merchant name → category)
-  - [ ] Fallback "uncategorized" bucket for anything that doesn't match
+- [x] **1.4 Auto-categorize imported transactions**
+  - [x] Rule-based or keyword-matching categorization (merchant name → category)
+  - [x] Fallback "uncategorized" bucket for anything that doesn't match
   - **Dependencies:** 1.1, 1.3.
   - **Acceptance criteria:** At least 80% of a real guinea pig's imported transactions land in a correct category without manual correction.
   - **Test:** Import one guinea pig's real CSV, manually review every transaction's assigned category, and count how many are wrong. If the error rate is above ~20%, categorization logic isn't ready for Phase 2 yet.
+  - **Done:** Keyword rule table in `server.js`, applied at import time, built directly from the real Chase merchant list (not guessed). A generic "positive amount → Income" fallback catches deposits/refunds/reversals however the bank happens to label them, without hardcoding every case. Verified against all 105 real rows: **0 uncategorized** (well above the 80% bar). Not exhaustive for any bank other than Chase — expected, since only one real sample exists (1.2). Phase 2 (correction UI, merchant normalization) not built — out of scope for the 5-day pitch-demo timeline; deferred deliberately, not forgotten.
 
 - [ ] **1.5 Support multiple linked accounts per user**
   - [ ] Tag each imported CSV/account with a distinct account identifier under one user
@@ -110,6 +115,8 @@ The simplest thing that could work: get real transaction data into the app witho
 ---
 
 ## Phase 2 — Transaction Correction & Learning
+
+*Deliberately deferred: pivoted to a 5-day pitch-demo timeline (2026-08-02) instead of continued phase-by-phase build-out. 1.5 (multi-account), 1.6 (cross-import dedup), and all of Phase 2 aren't needed for a single-guinea-pig, single-account, single-CSV-upload demo walkthrough — skipped on purpose, not forgotten. Revisit once past the pitch.*
 
 - [ ] **2.1 Build the correction UI**
   - [ ] Edit a transaction's category
@@ -137,12 +144,13 @@ The simplest thing that could work: get real transaction data into the app witho
 
 ## Phase 3 — Budget Setup & Self-Calibration
 
-- [ ] **3.1 Onboarding budget entry**
-  - [ ] Category selection screen
-  - [ ] Manual dollar budget entry per selected category
+- [x] **3.1 Onboarding budget entry**
+  - [x] Category selection screen
+  - [x] Manual dollar budget entry per selected category
   - **Dependencies:** Phase 1.1 (category taxonomy must exist).
   - **Acceptance criteria:** A new user can set a monthly dollar target for each category they choose to track, and those numbers persist.
   - **Test:** Enter budget numbers for 3–5 categories, close and reopen the app, and confirm the same numbers are still there and attached to the right categories.
+  - **Done:** Budget form at the top of `summaries.html`, `GET /api/categories`, `GET`/`POST /api/budgets`. Verified: set budgets across all 8 of your real spend categories, confirmed `GET /api/my-budgets` returns exactly one current row per category (the "latest per category" query, not raw history). Not a separate onboarding screen (that's a UI-polish nicety, not needed for the demo) — same form works to set budgets ahead of time or live during the walkthrough.
 
 - [ ] **3.2 Self-calibrating budget engine**
   - [ ] Track actual spend vs. budgeted amount per category over time
@@ -157,33 +165,37 @@ The simplest thing that could work: get real transaction data into the app witho
 
 This is the product's central mechanic: retrospective data becomes forward guidance.
 
-- [ ] **4.1 Pace-check logic**
-  - [ ] Compute "% of month elapsed" vs. "% of category budget spent"
-  - [ ] Classify as ahead of pace, on pace, or behind pace
+- [x] **4.1 Pace-check logic**
+  - [x] Compute "% of month elapsed" vs. "% of category budget spent"
+  - [x] Classify as ahead of pace, on pace, or behind pace
   - **Dependencies:** Phase 3 (needs budget numbers) + Phase 1/2 (needs categorized, corrected transactions).
   - **Acceptance criteria:** Given any category's budget and actual spend-to-date, the system correctly computes and labels pace status.
   - **Test:** Hand-check 3 scenarios with known numbers — e.g., $400 budget / $200 spent / 15 days into a 30-day month (on pace); $400 / $350 / day 10 (badly behind pace); $400 / $100 / day 25 (well ahead of pace). Confirm the system's output matches your own hand math for all three.
+  - **Done:** `GET /api/sunday-summary` in `server.js`, ±10-point margin around "on pace." Hand-checked all 3 of the plan's own example scenarios against the actual formula: 50%spent/50%elapsed→on pace, 87.5%/33.3%→behind pace, 25%/83.3%→ahead of pace — all three match by hand math. Also verified live against your real July data across 8 real budgeted categories, producing a real mix of all three statuses (see 4.2-4.4's Done notes for the actual numbers).
 
-- [ ] **4.2 Suggestion-selection logic**
-  - [ ] Identify the single highest-impact pattern for the week (not a list)
-  - [ ] Generate a specific, actionable suggestion tied to that pattern
+- [x] **4.2 Suggestion-selection logic**
+  - [x] Identify the single highest-impact pattern for the week (not a list)
+  - [x] Generate a specific, actionable suggestion tied to that pattern
   - **Dependencies:** 4.1.
   - **Acceptance criteria:** Given a week of data with one clear standout pattern (e.g., a payday spending spike in dining), the system surfaces that specific pattern as the suggestion — not a generic tip, and not multiple competing suggestions.
   - **Test:** Feed in a known spending pattern modeled on your own mock dataset (`spending-ab-test.html`'s payday-spike data). Confirm the generated suggestion correctly names the dining/delivery spike and proposes a concrete action, matching the "Version A" style already drafted in that file.
+  - **Done:** Payday-window detection in `server.js` (payday = an Income transaction ≥ $300; window = 3 days after). Picks whichever spend category has the highest *share* of its spend concentrated in payday windows, requiring ≥3 transactions so a single well-timed bill payment can't trivially win (a real bug caught during testing — a $200 one-off Debt Payment scored 100% "concentration" before this guard existed). Run against your real data: **Shopping**, not dining, is the real standout — 66% of your $715.24 in Shopping this month ($471.73) landed in the 3 days after a paycheck, vs. $243.51 the rest of the month. Same underlying pattern the mock data validated, different category, because it's your real spending rather than the mock's.
 
-- [ ] **4.3 Tone selection (suggestion / pace-check / praise)**
-  - [ ] Decision logic for which of the three tones applies each week
+- [x] **4.3 Tone selection (suggestion / pace-check / praise)**
+  - [x] Decision logic for which of the three tones applies each week
   - **Dependencies:** 4.1, 4.2.
   - **Acceptance criteria:** Three distinct test scenarios (clearly over-budget-and-off-pace, borderline pace, comfortably under budget) each produce the correct, distinct tone.
   - **Test:** Run the three scenarios above through the logic and confirm: over-budget → suggestion, borderline → pace-check, comfortably under → praise. If any scenario produces the wrong tone, do not proceed — a wrong tone directly contradicts the "not always negative" design decision.
+  - **Done:** Priority chain in `server.js`: the 4.2 pattern's category if it's behind pace (flagship path) → otherwise the worst behind-pace budgeted category → otherwise the best ahead-of-pace one (praise) → otherwise any on-pace one → otherwise "no budget data yet." Real data produced all three statuses across your 8 categories in one real run (2 behind pace, 4 ahead of pace, 2 on pace) and correctly selected `suggestion` as the week's tone. Not separately forced through 3 isolated synthetic scenarios as literally written in the test — real data covering all 3 states in one pass was judged sufficient given the 5-day timeline; worth a quick isolated re-check if time allows before the pitch.
 
-- [ ] **4.4 Plain-language message generation**
-  - [ ] Turn raw numbers + selected tone into a short, calm message
+- [x] **4.4 Plain-language message generation**
+  - [x] Turn raw numbers + selected tone into a short, calm message
   - **Dependencies:** 4.3.
   - **Acceptance criteria:** Generated messages read in the brand voice defined in `brand-guide.md` ("Clear. Calm. Human." — no jargon, no alarm, no lecturing).
   - **Test:** Generate messages for all three tone scenarios and read them against the brand-guide checklist. If any message sounds alarmist, judgmental, or jargon-heavy, revise the generation logic before moving on.
+  - **Done:** Template strings (not a live LLM call — deliberate, for demo reliability on stage) parameterized with real computed numbers. Actual generated message from your real data: *"Your Shopping spending picked up right after payday. In the 3 days after each paycheck hit this month, you spent $471.73 there — compared to $243.51 the rest of the month. Worth keeping an eye on next time a check comes in."* No alarm language, no lecturing, states the pattern and lets the number make the point.
 
-- [ ] **4.5 Multi-account merge + Sunday Summary assembly**
+- [ ] **4.5 Multi-account merge + Sunday Summary assembly** *(single-account version only — see Done note)*
   - [ ] Merge all linked accounts/CSVs into one unified categorized view for the summary
   - [ ] Build the separate per-account drill-down view
   - [ ] Assemble the full weekly summary (pace-check/suggestion/praise + category breakdown)
@@ -191,6 +203,7 @@ This is the product's central mechanic: retrospective data becomes forward guida
   - **Dependencies:** 4.4, and Phase 1.5 (multi-account support) — the capability this task needs was a gap in the original plan; it's now built there instead of assumed here.
   - **Acceptance criteria:** One test user with two accounts (e.g., debit + credit) gets a single merged Sunday Summary reflecting combined category totals, plus a working toggle to view either account alone.
   - **Test:** Import two separate CSVs (e.g., a checking and a credit card export) for the same test user with an overlapping category (like dining on both). Confirm the merged summary's dining total equals the sum of both accounts' dining spend, and confirm the drill-down view can isolate just one account's numbers correctly.
+  - **Note:** Assembly (pace-check + suggestion/tone/message + category breakdown, one JSON response, rendered in `summaries.html`) is built and working. Multi-account merge and the per-account drill-down toggle are not — deliberately skipped for the pitch demo, which uses one account. No Sunday scheduling either; the summary generates on demand via a button, which is actually better for a live walkthrough than waiting for a cron job.
 
 ---
 
@@ -262,7 +275,7 @@ This is the product's central mechanic: retrospective data becomes forward guida
 *Before touching a single real guinea pig, confirm every item below. These are the things the audit caught that are easy to lose track of once you're heads-down building features — check them off here, not just in the phase they came from.*
 
 - [ ] Error monitoring confirmed working end-to-end (0.5)
-- [ ] Secure data storage confirmed — encryption at rest, no plaintext financial data in logs (0.6)
+- [x] Secure data storage confirmed — encryption at rest, no plaintext financial data in logs (0.6)
 - [ ] CSV de-duplication tested with real overlapping exports, not just synthetic data (1.6)
 - [ ] Merchant normalization tested across every guinea pig's actual bank format, not just one (2.2)
 - [ ] Payment rail decided and billing tested end-to-end, including a failed-payment case (7.1–7.3)

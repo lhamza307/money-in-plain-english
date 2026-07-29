@@ -2,6 +2,7 @@
 // Phase 0.3 of project-plan.md.
 
 const TABS = [
+  { id: 'accounts', label: 'Accounts', href: '/accounts.html' },
   { id: 'inbox', label: 'Inbox', href: '/inbox.html' },
   { id: 'summaries', label: 'Summaries', href: '/summaries.html' },
   { id: 'chatbot', label: 'Chatbot', href: '/chatbot.html' }

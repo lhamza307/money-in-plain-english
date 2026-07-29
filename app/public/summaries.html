@@ -4,13 +4,150 @@
 <meta charset="utf-8">
 <title>Summaries — Money in Plain English</title>
 <link rel="stylesheet" href="/shell.css">
+<style>
+  :root {
+    --sage: #5A9171;
+    --sage-light: #87B89D;
+    --ink: #2D2D2D;
+    --muted: #777;
+    --border: #e5e7eb;
+    --surface: #F2F7F4;
+    --red: #b34a3f;
+    --green: #3f8a5c;
+    --yellow: #b3843f;
+  }
+  .tab-content { max-width: 720px; }
+  h2 { font-family: inherit; }
+
+  .budget-form { border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 32px; }
+  .budget-form h3 { margin: 0 0 12px; font-size: 1rem; }
+  .budget-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 6px 0; }
+  .budget-row label { flex: 1; font-size: 14px; }
+  .budget-row input { width: 110px; padding: 6px 8px; text-align: right; }
+  .budget-form button { margin-top: 14px; padding: 10px 16px; background: var(--sage); color: white; border: none; border-radius: 6px; cursor: pointer; }
+  .budget-saved-note { font-size: 13px; color: var(--sage); margin-left: 10px; }
+
+  .generate-btn { padding: 10px 16px; border: 1px solid var(--sage); background: white; color: var(--sage); border-radius: 6px; cursor: pointer; margin-bottom: 24px; }
+
+  .summary-card { border-radius: 10px; padding: 24px; margin-bottom: 24px; }
+  .summary-card.tone-suggestion { background: #fdf3ef; border: 1px solid #e8c9b8; }
+  .summary-card.tone-praise { background: #eef7f0; border: 1px solid #bfe0c8; }
+  .summary-card.tone-pace-check { background: var(--surface); border: 1px solid #cfe0d6; }
+  .summary-card .tone-label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 8px; }
+  .summary-card .message { font-size: 1.05rem; line-height: 1.5; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); }
+  td.amount, th.amount { text-align: right; font-variant-numeric: tabular-nums; }
+  .status-badge { font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+  .status-behind_pace { background: #fdeaea; color: var(--red); }
+  .status-on_pace { background: #f1efe3; color: var(--yellow); }
+  .status-ahead_of_pace { background: #e6f4ea; color: var(--green); }
+
+  .period-note { color: var(--muted); font-size: 13px; margin-bottom: 20px; }
+</style>
 </head>
 <body>
   <div class="tab-content">
     <h2>Summaries</h2>
-    <p>No Sunday Summaries yet. Once transactions and a budget exist (Phases 1–4), your weekly history builds up here.</p>
+
+    <div class="budget-form">
+      <h3>Monthly budgets</h3>
+      <div id="budget-rows"></div>
+      <button id="save-budgets-btn">Save budgets</button>
+      <span class="budget-saved-note" id="budget-saved-note" style="display:none">Saved.</span>
+    </div>
+
+    <button class="generate-btn" id="generate-btn">Generate this week's Sunday Summary</button>
+
+    <div id="summary-output"></div>
   </div>
   <script src="/nav.js"></script>
-  <script>initShell('summaries');</script>
+  <script>
+    function escapeHtml(s) {
+      return String(s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+    function fmt(cents) {
+      const dollars = (Math.abs(cents) / 100).toFixed(2);
+      return cents < 0 ? `-$${dollars}` : `$${dollars}`;
+    }
+
+    let spendCategories = [];
+
+    async function loadBudgetForm() {
+      const [catsRes, budgetsRes] = await Promise.all([
+        fetch('/api/categories'),
+        fetch('/api/my-budgets')
+      ]);
+      const categories = await catsRes.json();
+      const budgets = await budgetsRes.json();
+      spendCategories = categories.filter(c => c.is_spend_category);
+      const budgetByCategory = Object.fromEntries(budgets.map(b => [b.category_id, b.amount_cents]));
+
+      const container = document.getElementById('budget-rows');
+      container.innerHTML = spendCategories.map(c => {
+        const existing = budgetByCategory[c.id];
+        const dollars = existing != null ? (existing / 100).toFixed(2) : '';
+        return `
+          <div class="budget-row">
+            <label for="budget-${c.id}">${escapeHtml(c.name)}</label>
+            <input type="number" step="1" min="0" id="budget-${c.id}" data-category-id="${c.id}" placeholder="0" value="${dollars}">
+          </div>
+        `;
+      }).join('');
+    }
+
+    document.getElementById('save-budgets-btn').addEventListener('click', async () => {
+      const inputs = document.querySelectorAll('#budget-rows input');
+      const budgets = Array.from(inputs)
+        .filter(i => i.value !== '')
+        .map(i => ({ category_id: Number(i.dataset.categoryId), amount_cents: Math.round(Number(i.value) * 100) }));
+      if (budgets.length === 0) return;
+      await fetch('/api/budgets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ budgets })
+      });
+      const note = document.getElementById('budget-saved-note');
+      note.style.display = 'inline';
+      setTimeout(() => note.style.display = 'none', 2000);
+    });
+
+    function toneLabel(tone) {
+      return { suggestion: 'Suggestion', praise: 'Nice work', 'pace-check': 'Pace check' }[tone] || tone;
+    }
+
+    document.getElementById('generate-btn').addEventListener('click', async () => {
+      const res = await fetch('/api/sunday-summary');
+      const data = await res.json();
+      const output = document.getElementById('summary-output');
+
+      const rowsHtml = data.categories.map(c => `
+        <tr>
+          <td>${escapeHtml(c.category_name)}</td>
+          <td class="amount">${fmt(c.spent_cents)}</td>
+          <td class="amount">${c.budget_cents != null ? fmt(c.budget_cents) : '—'}</td>
+          <td class="amount">${c.pct_spent != null ? Math.round(c.pct_spent * 100) + '%' : '—'}</td>
+          <td>${c.status ? `<span class="status-badge status-${c.status}">${c.status.replace('_', ' ')}</span>` : ''}</td>
+        </tr>
+      `).join('');
+
+      output.innerHTML = `
+        <div class="period-note">${escapeHtml(data.period.month)} — ${data.period.day_of_month} of ${data.period.days_in_month} days elapsed (${Math.round(data.period.pct_elapsed * 100)}%)</div>
+        <div class="summary-card tone-${data.tone}">
+          <div class="tone-label">${escapeHtml(toneLabel(data.tone))}</div>
+          <div class="message">${escapeHtml(data.message)}</div>
+        </div>
+        <table>
+          <thead><tr><th>Category</th><th class="amount">Spent</th><th class="amount">Budget</th><th class="amount">% used</th><th>Status</th></tr></thead>
+          <tbody>${rowsHtml}</tbody>
+        </table>
+      `;
+    });
+
+    initShell('summaries').then(loadBudgetForm);
+  </script>
 </body>
 </html>

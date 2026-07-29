@@ -1,0 +1,144 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Accounts — Money in Plain English</title>
+<link rel="stylesheet" href="/shell.css">
+<style>
+  .account-card { border: 1px solid #ddd; border-radius: 6px; padding: 16px; margin-bottom: 16px; }
+  .account-card h3 { margin: 0 0 4px; }
+  .account-card .type { color: #777; font-size: 13px; margin-bottom: 12px; }
+  .add-account-form { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+  .add-account-form input, .add-account-form select { padding: 8px; }
+  .add-account-form input { flex: 1; min-width: 160px; }
+  .import-summary { margin-top: 10px; padding: 10px; background: #f2f7f4; border-radius: 4px; font-size: 14px; }
+  .import-summary.error { background: #fdeaea; color: #b00020; }
+  table { border-collapse: collapse; width: 100%; margin-top: 24px; font-size: 14px; }
+  th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid #eee; }
+  td.amount { text-align: right; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+  <div class="tab-content">
+    <h2>Accounts</h2>
+
+    <form class="add-account-form" id="add-account-form">
+      <input type="text" id="nickname" placeholder="Nickname (e.g. Chase Checking)" required>
+      <select id="account_type">
+        <option value="checking">Checking</option>
+        <option value="credit_card">Credit card</option>
+        <option value="other">Other</option>
+      </select>
+      <button type="submit">Add account</button>
+    </form>
+
+    <div id="accounts-list"></div>
+
+    <h3>Recent transactions</h3>
+    <table id="txn-table">
+      <thead><tr><th>Date</th><th>Account</th><th>Merchant</th><th class="amount">Amount</th></tr></thead>
+      <tbody id="txn-body"></tbody>
+    </table>
+  </div>
+  <script src="/nav.js"></script>
+  <script>
+    let accounts = [];
+
+    function formatCents(cents) {
+      const dollars = (Math.abs(cents) / 100).toFixed(2);
+      return cents < 0 ? `-$${dollars}` : `$${dollars}`;
+    }
+
+    // account nicknames and CSV-derived merchant strings are untrusted
+    // text rendered via innerHTML below -- escape them so a merchant
+    // description (or a nickname) containing HTML can't execute as markup.
+    function escapeHtml(s) {
+      return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    async function loadAccounts() {
+      const res = await fetch('/api/my-accounts');
+      accounts = await res.json();
+      const list = document.getElementById('accounts-list');
+      list.innerHTML = accounts.length
+        ? accounts.map(a => `
+          <div class="account-card" data-account-id="${a.id}">
+            <h3>${escapeHtml(a.nickname)}</h3>
+            <div class="type">${escapeHtml(a.account_type)}</div>
+            <input type="file" accept=".csv" class="csv-input">
+            <div class="import-summary" style="display:none"></div>
+          </div>
+        `).join('')
+        : '<p>No accounts yet. Add one above to start importing transactions.</p>';
+
+      list.querySelectorAll('.csv-input').forEach(input => {
+        input.addEventListener('change', onCsvSelected);
+      });
+    }
+
+    async function onCsvSelected(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const card = e.target.closest('.account-card');
+      const accountId = Number(card.dataset.accountId);
+      const summaryEl = card.querySelector('.import-summary');
+
+      const text = await file.text();
+      const res = await fetch('/api/import-csv', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ account_id: accountId, filename: file.name, csv_text: text })
+      });
+      const data = await res.json();
+
+      summaryEl.style.display = 'block';
+      if (!res.ok) {
+        summaryEl.className = 'import-summary error';
+        summaryEl.textContent = data.error;
+        return;
+      }
+      summaryEl.className = 'import-summary';
+      summaryEl.textContent =
+        `${data.row_count} rows in file — ${data.imported} imported, ${data.duplicates} already imported, ${data.malformed} couldn't be read.`;
+      loadTransactions();
+    }
+
+    async function loadTransactions() {
+      const res = await fetch('/api/my-transactions');
+      const txns = await res.json();
+      const accountById = Object.fromEntries(accounts.map(a => [a.id, a.nickname]));
+      const body = document.getElementById('txn-body');
+      body.innerHTML = txns.map(t => `
+        <tr>
+          <td>${escapeHtml(t.date)}</td>
+          <td>${escapeHtml(accountById[t.account_id] || '')}</td>
+          <td>${escapeHtml(t.raw_merchant)}</td>
+          <td class="amount">${formatCents(t.amount_cents)}</td>
+        </tr>
+      `).join('');
+    }
+
+    document.getElementById('add-account-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const nickname = document.getElementById('nickname').value;
+      const account_type = document.getElementById('account_type').value;
+      await fetch('/api/accounts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nickname, account_type })
+      });
+      document.getElementById('nickname').value = '';
+      loadAccounts();
+    });
+
+    initShell('accounts').then(() => {
+      loadAccounts().then(loadTransactions);
+    });
+  </script>
+</body>
+</html>
