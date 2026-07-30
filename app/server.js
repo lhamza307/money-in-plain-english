@@ -90,6 +90,10 @@ if (process.env.NODE_ENV === 'production' && SESSION_SECRET === 'dev-only-secret
 
 const app = express();
 app.use(express.json());
+// No index.html exists -- without this, hitting the bare domain root
+// (what anyone will type first) hits Express's default 404 instead of
+// landing anywhere in the app.
+app.get('/', (req, res) => res.redirect('/login.html'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
   secret: SESSION_SECRET,

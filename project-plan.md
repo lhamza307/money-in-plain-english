@@ -106,11 +106,12 @@ The simplest thing that could work: get real transaction data into the app witho
   - **Acceptance criteria:** One user can upload two separate CSVs (e.g., checking + credit card) tagged to two distinct accounts, without either overwriting the other.
   - **Test:** Upload two different CSVs under the same test user and confirm both sets of transactions are stored, correctly tagged by account, and neither overwrites the other. This is a real prerequisite for Phase 4.5's multi-account merge — don't skip it and discover the gap there.
 
-- [ ] **1.6 Handle repeat/overlapping CSV imports without double-counting**
-  - [ ] Detect and de-duplicate transactions that appear in more than one uploaded file
+- [x] **1.6 Handle repeat/overlapping CSV imports without double-counting**
+  - [x] Detect and de-duplicate transactions that appear in more than one uploaded file
   - **Dependencies:** 1.3.
   - **Acceptance criteria:** Re-uploading a CSV that overlaps in date range with a previous upload doesn't create duplicate transactions or inflate category totals.
   - **Test:** Upload a CSV, then upload a second CSV covering an overlapping date range (real bank exports commonly do this — e.g., "last 30 days" every time). Confirm the overlapping transactions appear once, not twice, and category totals don't double-count. Without this, the pace-check math in Phase 4 will lie to users.
+  - **Done:** `schema.sql` (`transactions.dedup_fingerprint`, `UNIQUE`), `server.js` (`/api/import-csv`, sha256 of account_id+date+amount_cents+raw_merchant computed pre-encryption, `SQLITE_CONSTRAINT_UNIQUE` caught and counted as `duplicates` rather than crashing or double-inserting). The mechanism already existed but had never been exercised end-to-end — verified for real against an isolated test DB: uploaded a 5-row Chase-format CSV (Jul 1–15), then a second 4-row CSV (Jul 10–20) modeled on a real "last 30 days" re-export, with 2 rows (Chipotle Jul 10, Netflix Jul 12) genuinely overlapping. Response correctly reported `imported: 2, duplicates: 2` on the second upload. Final transaction count was 7, not 9; category totals (Dining & Delivery, Groceries, etc.) summed to exactly the hand-calculated expected total ($187.23) with the overlap counted once. Two same-merchant-different-date rows (Publix Jul 3 vs. Jul 16) were correctly kept as distinct, real transactions rather than being treated as duplicates. Not yet re-tested against a real second export from an actual guinea pig's bank (still open on the Pre-Pilot Checklist) — this run used realistic but self-constructed CSVs, not a second real-world file.
 
 ---
 
