@@ -125,3 +125,34 @@ These emerged from patterns.md and are unresolved. They should shape the next ro
 **Biggest financial risk, revised:** Under the old B2B2C model the risk was timing — a 6–18 month institutional sales cycle burning cash with a free tier attached. Under direct-to-consumer subscription, the risk shifts to **conversion and retention**: will free-trial users actually convert to paying subscribers at the end of four weeks, and will they stay subscribed month over month. Neither has any data yet — see `unit-economics.md` and `financial-model.xlsx` for the revised cost/break-even model under this structure, and `pricing-test.md` for what validating $7.99 against this specific bundled concept would require.
 
 **What the prior interview evidence means under the new model:** Tamara ($5–8/mo, passive-only concept), Dooney ($15–20/mo, dashboard-plus-suggestions concept), and Emily (~$10/mo, light-setup-plus-nudges concept, strongest purchase intent) are no longer read as secondary signals about freemium acquisition — they are now the primary pricing evidence the $7.99 working assumption is built on. The caveat is unchanged: three different people reacted to three different concepts, none of which included the chatbot now considered part of v1, so none of them constitutes a direct test of $7.99 for this product as currently scoped.
+
+---
+
+## Build Progress
+
+**Last updated:** 2026-07-29. See `project-plan.md` for the full task-by-task build log this section summarizes.
+
+### What's working right now
+
+A live, bank-CSV-connected web app carries the full core loop end to end, for one account: sign up → log in → upload a real bank CSV → transactions auto-categorize with 0% uncategorized against real data → set per-category budgets → generate a Sunday Summary (pace-check status, the week's single highest-impact spending pattern, a plain-language message in brand voice). Financial data is encrypted at rest, error monitoring is live (Sentry), and CSV re-import de-duplication is verified against overlapping exports so re-uploading "last 30 days" doesn't inflate category totals. The whole thing is deployed and reachable at a real URL, not just running locally, and every screen now carries the actual brand styling (sage green, cream background, Nunito/Lato) instead of an unstyled placeholder look.
+
+**Not yet built:** multi-account merge, transaction correction UI, merchant-name normalization, the AI chatbot, billing/paywall, push notifications — all deliberately deferred for the pitch-demo timeline (`project-plan.md` Phases 2, 5, 6, 7). Category add/rename/delete/reorder was attempted 2026-07-29 and reverted mid-build (`project-plan.md` 3.3) — categories remain fixed for now.
+
+### Feedback from testing
+
+No real guinea pig / target-customer feedback yet — Phase 8 (the actual pilot) hasn't started, so this is not the qualitative feedback `project-plan.md` 8.2 calls for. What exists so far is founder-as-first-user reaction from actually using the built product today:
+- The unstyled default look read as "boring, not exciting to the eye" — prompted the brand-color/font pass.
+- The plain category list ("Transportation," "Shopping") wasn't self-explanatory without examples — prompted the inline "(gas, tolls, car note, etc.)" hint text under each budget category.
+- A wish to personally add/rename/reorder categories surfaced directly — notable because it cuts against `brand-guide.md`'s "no categories to maintain" pitch. Worth specifically watching for in real guinea pig feedback rather than resolving unilaterally from one person's preference.
+
+### What's left before Gate 4
+
+Gate 4 asks for "working," not "complete" — the core loop above already clears that bar for one person walking through it. What's still worth doing before treating it as demo-ready:
+- Get a real CSV from an actual guinea pig, not just the founder's own account (`project-plan.md` 1.2) — the parser is still Chase-specific and untested against any other bank's format.
+- Confirm CSV dedup and error monitoring hold up against real overlapping exports and real production traffic, not the self-constructed test data used so far (Pre-Pilot Checklist).
+- Harden the client-side-only route protection on the tab pages (`project-plan.md` 0.3's known gap) before the URL goes to anyone outside the founder.
+- Decide whether to finish or drop category management (3.3) before it's shown to anyone, since it's currently reverted and not live.
+
+### Live URL
+
+**https://money-in-plain-english-app.onrender.com**

@@ -37,6 +37,7 @@ Build a bank-connected app that turns a person's spending into a weekly plain-la
   - **Acceptance criteria:** A logged-in test user can navigate between all planned tabs without the app crashing or losing session state.
   - **Test:** Log in as a test user, tap through every planned tab, and confirm each loads (even empty) and the session survives navigation.
   - **Done:** `app/public/{inbox,summaries,chatbot}.html`, shared `nav.js`/`shell.css`. Verified all three tabs load and the session (`/api/me`) stays valid across each. Known gap, not blocking: route protection is client-side only (nav.js redirects on a failed auth check) — the static HTML itself isn't server-gated. No real data exposed since these are placeholders, but worth hardening before Phase 8.
+  - **2026-07-29 addendum:** the bare domain root (`GET /`) had no route at all — hitting `money-in-plain-english-app.onrender.com` directly showed Express's default "Cannot GET /" instead of landing anywhere. Added a redirect to `/login.html` in `server.js`. Verified live: `GET /` now returns `302 → /login.html` on production, not just locally.
 
 - [x] **0.4 Set up hosting & backend infrastructure**
   - [x] Hosting provider
@@ -46,6 +47,7 @@ Build a bank-connected app that turns a person's spending into a weekly plain-la
   - **Acceptance criteria:** The app (even empty) is deployed somewhere reachable, and data written to the database survives a redeploy.
   - **Test:** Deploy a trivial change, confirm it goes live, and confirm test data entered before the deploy is still there after.
   - **Done:** Render (Starter, $7.25/mo total with disk), `render.yaml`. Live at `money-in-plain-english-app.onrender.com`. Fixed a real bug found before deploying: `server.js` wiped the database on every process start, which would have destroyed production data on every redeploy. Verified for real: signed up a test account, pushed a code change, confirmed the deploy went live, confirmed the account created before the redeploy still existed after.
+  - **2026-07-29 addendum:** deploy pipeline exercised again with three real pushes in one session (root redirect fix, brand styling, budget-category hint text) — each one polled on the live URL until Render's redeploy completed, then verified against production directly (not assumed from a successful push): `GET /` redirect, `shell.css` serving the new cream/sage/font values, and a fresh signup against production returning the updated Transportation category hint. Confirms the redeploy cycle holds up under repeated real use, not just the one trivial change from the original test.
 
 - [x] **0.5 Set up error monitoring, crash reporting, and logging**
   - [x] Wire in a monitoring tool
@@ -152,6 +154,7 @@ The simplest thing that could work: get real transaction data into the app witho
   - **Acceptance criteria:** A new user can set a monthly dollar target for each category they choose to track, and those numbers persist.
   - **Test:** Enter budget numbers for 3–5 categories, close and reopen the app, and confirm the same numbers are still there and attached to the right categories.
   - **Done:** Budget form at the top of `summaries.html`, `GET /api/categories`, `GET`/`POST /api/budgets`. Verified: set budgets across all 8 of your real spend categories, confirmed `GET /api/my-budgets` returns exactly one current row per category (the "latest per category" query, not raw history). Not a separate onboarding screen (that's a UI-polish nicety, not needed for the demo) — same form works to set budgets ahead of time or live during the walkthrough.
+  - **2026-07-29 addendum:** each budget row now shows a short "(gas, tolls, car note, etc.)" style hint under the category name, pulled from `categories.description` — direct request after finding the plain category list unclear on its own. Also expanded Transportation's description to include car note and maintenance. Verified against both the fresh-signup seed path and the existing-database migration path (`migrations/0004_transportation_description.sql`).
 
 - [ ] **3.2 Self-calibrating budget engine**
   - [ ] Track actual spend vs. budgeted amount per category over time
@@ -159,6 +162,13 @@ The simplest thing that could work: get real transaction data into the app witho
   - **Dependencies:** 3.1, and at least one month of categorized transaction data (Phase 1 + 2).
   - **Acceptance criteria:** After a full month of real data, the app proposes an adjusted budget number for at least one category where actual spend diverged meaningfully from the original guess.
   - **Test:** Feed in a full month of one guinea pig's real transaction data for a category with a known total (e.g., $600 actually spent on food against a $400 budget guess). Confirm the app's proposed adjustment moves meaningfully toward that real $600 figure rather than staying anchored to the original guess.
+
+- [ ] **3.3 Category management (add/rename/delete/reorder)** *(attempted 2026-07-29, reverted — see note)*
+  - [ ] Let a user add, rename, delete, and reorder their own spend categories
+  - **Dependencies:** 1.1 (category taxonomy), and a real architectural decision reversing 1.1's original "fixed, not user-editable" call.
+  - **Acceptance criteria:** A user can add a new spend category, rename an existing one, delete one without corrupting other users' data or existing transaction/budget history, and reorder the list — all without breaking CSV auto-categorization (1.4) or pace-check math (4.1).
+  - **Test:** Rename a default category, re-import a CSV containing a merchant that used to auto-categorize into it, and confirm it still lands correctly. Delete a budgeted category and confirm its past transactions fall back to "uncategorized" rather than erroring or vanishing. Reorder the list and confirm the budget form reflects the new order after a refresh.
+  - **Note:** Direct request, explicitly weighed against `category-taxonomy.md`'s "Fixed in v1, not user-editable" decision (itself tied to `brand-guide.md`'s "no categories to maintain" promise) — reversing it was the user's call, not a default. Real scope, not a UI tweak: categories were a single global table shared by every user, and CSV auto-categorization (1.4) matched on the category's exact display name. Editable categories need categories to become per-user (so one person's edits can't affect anyone else's), plus a rename-proof anchor for auto-categorization separate from the user-facing name, plus a real migration converting every existing global category into per-user copies with transaction/budget history correctly remapped. Started (schema + server.js rewrite, migration draft), interrupted mid-build with the fresh-DB seeding path and the auto-categorization rewrite incomplete — in that state, a fresh signup got zero categories and CSV import silently stopped categorizing anything. Reverted to the last working commit rather than deploy or leave local in a broken state; the in-progress version is backed up outside the repo for a future dedicated session, not lost. `category-taxonomy.md`'s "fixed" decision stands as documented until this is picked back up and finished properly.
 
 ---
 
