@@ -1,29 +1,81 @@
-body { font-family: system-ui, sans-serif; margin: 0; }
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&family=Lato:wght@300;400;700&display=swap');
+
+:root {
+  --sage: #5A9171;
+  --sage-dark: #477a5c;
+  --sage-light: #87B89D;
+  --ink: #2D2D2D;
+  --muted: #777;
+  --border: #e5ddc8;
+  --surface: #F2F7F4;
+  --cream: #FAF6EC;
+}
+
+body {
+  font-family: 'Lato', system-ui, sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  margin: 0;
+}
+
+h1, h2, h3 {
+  font-family: 'Nunito', system-ui, sans-serif;
+  color: var(--sage);
+}
+
+button {
+  font-family: 'Lato', system-ui, sans-serif;
+  font-weight: 700;
+  background: var(--sage);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+button:hover { background: var(--sage-dark); }
+
+input, select {
+  font-family: 'Lato', system-ui, sans-serif;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+input:focus, select:focus {
+  outline: 2px solid var(--sage-light);
+  outline-offset: 1px;
+}
 
 .app-nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 12px 24px;
-  border-bottom: 1px solid #ddd;
+  background: white;
+  border-bottom: 1px solid var(--border);
 }
 .app-nav-tabs a {
+  font-family: 'Nunito', system-ui, sans-serif;
+  font-weight: 700;
   margin-right: 20px;
   text-decoration: none;
-  color: #555;
+  color: var(--muted);
   padding-bottom: 4px;
 }
 .app-nav-tabs a.active {
-  color: #111;
-  font-weight: 600;
-  border-bottom: 2px solid #111;
+  color: var(--sage);
+  border-bottom: 2px solid var(--sage);
 }
 .app-nav-user {
   display: flex;
   align-items: center;
   gap: 12px;
   font-size: 14px;
-  color: #555;
+  color: var(--muted);
+}
+.app-nav-user button {
+  padding: 6px 14px;
+  font-size: 13px;
 }
 
 .tab-content {

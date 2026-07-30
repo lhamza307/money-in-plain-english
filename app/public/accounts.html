@@ -5,16 +5,16 @@
 <title>Accounts — Money in Plain English</title>
 <link rel="stylesheet" href="/shell.css">
 <style>
-  .account-card { border: 1px solid #ddd; border-radius: 6px; padding: 16px; margin-bottom: 16px; }
-  .account-card h3 { margin: 0 0 4px; }
-  .account-card .type { color: #777; font-size: 13px; margin-bottom: 12px; }
+  .account-card { background: white; border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 16px; }
+  .account-card h3 { margin: 0 0 4px; color: var(--ink); font-family: 'Nunito', system-ui, sans-serif; }
+  .account-card .type { color: var(--muted); font-size: 13px; margin-bottom: 12px; }
   .add-account-form { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
-  .add-account-form input, .add-account-form select { padding: 8px; }
+  .add-account-form input, .add-account-form select { padding: 10px; }
   .add-account-form input { flex: 1; min-width: 160px; }
-  .import-summary { margin-top: 10px; padding: 10px; background: #f2f7f4; border-radius: 4px; font-size: 14px; }
+  .import-summary { margin-top: 10px; padding: 10px; background: var(--surface); border-radius: 6px; font-size: 14px; }
   .import-summary.error { background: #fdeaea; color: #b00020; }
-  table { border-collapse: collapse; width: 100%; margin-top: 24px; font-size: 14px; }
-  th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid #eee; }
+  table { border-collapse: collapse; width: 100%; margin-top: 24px; font-size: 14px; background: white; border-radius: 8px; overflow: hidden; }
+  th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--border); }
   td.amount { text-align: right; font-variant-numeric: tabular-nums; }
 </style>
 </head>
