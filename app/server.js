@@ -34,7 +34,7 @@ if (isFreshDb) {
     INSERT INTO categories (name, description, is_spend_category) VALUES
       ('Housing & Utilities', 'Rent/mortgage, electric, water, internet, renters/home insurance.', 1),
       ('Debt Payments', 'Student loan and credit card payments, and other loan payments.', 1),
-      ('Transportation', 'Gas, car insurance, parking, tolls, rideshare, public transit.', 1),
+      ('Transportation', 'Gas, car insurance, parking, tolls, car note, maintenance, rideshare, public transit.', 1),
       ('Groceries', 'Supermarkets and grocery delivery.', 1),
       ('Dining & Delivery', 'Restaurants, coffee shops, food delivery apps.', 1),
       ('Shopping', 'General retail and one-off purchases not covered elsewhere -- clothing, electronics, home goods, cosmetics, entertainment purchases.', 1),
@@ -74,6 +74,10 @@ if (isFreshDb) {
   // People, added after real-data testing (category-taxonomy.md).
   // Safe to run every startup -- INSERT OR IGNORE is idempotent.
   db.exec(fs.readFileSync(path.join(__dirname, 'migrations', '0003_transfers_and_cash_categories.sql'), 'utf8'));
+
+  // Transportation description tweak for the budget-form hint text.
+  // Safe to run every startup -- plain UPDATE, same value each time.
+  db.exec(fs.readFileSync(path.join(__dirname, 'migrations', '0004_transportation_description.sql'), 'utf8'));
 }
 
 // categories are a fixed v1 taxonomy (Phase 1.1) that never changes at

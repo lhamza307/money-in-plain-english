@@ -14,8 +14,10 @@
 
   .budget-form { border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 32px; }
   .budget-form h3 { margin: 0 0 12px; font-size: 1rem; }
-  .budget-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 6px 0; }
+  .budget-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 0; }
   .budget-row label { flex: 1; font-size: 14px; }
+  .budget-row .category-name { display: block; }
+  .budget-row .category-hint { display: block; font-size: 12px; color: var(--muted); font-weight: normal; margin-top: 2px; }
   .budget-row input { width: 110px; padding: 6px 8px; text-align: right; }
   .budget-form button { margin-top: 14px; padding: 10px 16px; background: var(--sage); color: white; border: none; border-radius: 6px; cursor: pointer; }
   .budget-saved-note { font-size: 13px; color: var(--sage); margin-left: 10px; }
@@ -83,9 +85,16 @@
       container.innerHTML = spendCategories.map(c => {
         const existing = budgetByCategory[c.id];
         const dollars = existing != null ? (existing / 100).toFixed(2) : '';
+        // description reads like a sentence ("Gas, tolls, etc.") in the
+        // DB -- strip the trailing period so it doesn't look odd inside
+        // parentheses.
+        const hint = (c.description || '').replace(/\.$/, '');
         return `
           <div class="budget-row">
-            <label for="budget-${c.id}">${escapeHtml(c.name)}</label>
+            <label for="budget-${c.id}">
+              <span class="category-name">${escapeHtml(c.name)}</span>
+              ${hint ? `<span class="category-hint">(${escapeHtml(hint)})</span>` : ''}
+            </label>
             <input type="number" step="1" min="0" id="budget-${c.id}" data-category-id="${c.id}" placeholder="0" value="${dollars}">
           </div>
         `;
