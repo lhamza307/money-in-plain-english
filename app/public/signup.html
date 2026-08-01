@@ -5,7 +5,10 @@
 <title>Sign up — Money in Plain English</title>
 <link rel="stylesheet" href="/shell.css">
 <style>
-  body { max-width: 360px; margin: 80px auto; padding: 0 24px; box-sizing: border-box; }
+  body { max-width: 360px; margin: 40px auto 80px; padding: 0 24px; box-sizing: border-box; }
+  .brand { text-align: center; margin-bottom: 32px; }
+  .brand img { width: 140px; height: auto; }
+  .brand p { color: var(--muted); font-size: 15px; line-height: 1.5; margin: 12px 0 0; }
   input { display: block; width: 100%; padding: 10px; margin: 8px 0; box-sizing: border-box; }
   button { width: 100%; padding: 10px; }
   #msg { color: #b00020; margin-top: 8px; }
@@ -13,6 +16,10 @@
 </style>
 </head>
 <body>
+  <div class="brand">
+    <img src="/logo.png" alt="Money in Plain English">
+    <p>Your money, finally in plain english. We turn your bank transactions into a clear weekly summary — so you always know where your money went, without building a budget yourself.</p>
+  </div>
   <h2>Sign up</h2>
   <form id="signup-form">
     <input type="email" id="email" placeholder="Email" required>
