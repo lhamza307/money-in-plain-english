@@ -33,6 +33,7 @@ async function initShell(activeTab) {
     </div>
     <div class="app-nav-brand">
       <img src="/logo.png" alt="Money in Plain English">
+      <span>Money in Plain English</span>
     </div>
     <div class="app-nav-user">
       <span>${me.email}</span>
