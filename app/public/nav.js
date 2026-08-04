@@ -8,6 +8,15 @@ const TABS = [
   { id: 'chatbot', label: 'Chatbot', href: '/chatbot.html' }
 ];
 
+// Shared by inbox.html and summaries.html so every dated checkin
+// renders the same way in both places. SQLite's datetime('now') format
+// ("YYYY-MM-DD HH:MM:SS", no 'T'/'Z') needs normalizing before Date()
+// will parse it consistently.
+function formatCheckinDate(sqliteDatetime) {
+  const d = new Date(sqliteDatetime.replace(' ', 'T') + 'Z');
+  return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
 async function initShell(activeTab) {
   const meRes = await fetch('/api/me');
   if (!meRes.ok) {

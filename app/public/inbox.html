@@ -4,13 +4,55 @@
 <meta charset="utf-8">
 <title>Inbox — Money in Plain English</title>
 <link rel="stylesheet" href="/shell.css">
+<style>
+  :root {
+    --red: #b34a3f;
+    --green: #3f8a5c;
+    --yellow: #b3843f;
+  }
+  .tab-content { max-width: 720px; }
+  .nudge-card { border-radius: 10px; padding: 20px; margin-bottom: 16px; }
+  .nudge-card.tone-suggestion { background: #fdf3ef; border: 1px solid #e8c9b8; }
+  .nudge-card.tone-praise { background: #eef7f0; border: 1px solid #bfe0c8; }
+  .nudge-card.tone-pace-check { background: var(--surface); border: 1px solid #cfe0d6; }
+  .nudge-date { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+  .nudge-tone { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 6px; }
+  .nudge-message { font-size: 1rem; line-height: 1.5; }
+</style>
 </head>
 <body>
   <div class="tab-content">
     <h2>Inbox</h2>
-    <p>No messages yet. Your short weekly nudges will show up here once your Sunday Summaries start.</p>
+    <div id="inbox-list"></div>
   </div>
   <script src="/nav.js"></script>
-  <script>initShell('inbox');</script>
+  <script>
+    function escapeHtml(s) {
+      return String(s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    function toneLabel(tone) {
+      return { suggestion: 'Suggestion', praise: 'Nice work', 'pace-check': 'Pace check' }[tone] || tone;
+    }
+
+    async function loadInbox() {
+      const res = await fetch('/api/my-checkins');
+      const history = await res.json();
+      const list = document.getElementById('inbox-list');
+      list.innerHTML = history.length
+        ? history.map(c => `
+          <div class="nudge-card tone-${c.tone}">
+            <div class="nudge-date">${escapeHtml(formatCheckinDate(c.created_at))}${c.source === 'auto' ? ' · weekly check-in' : ' · manual check-in'}</div>
+            <div class="nudge-tone">${escapeHtml(toneLabel(c.tone))}</div>
+            <div class="nudge-message">${escapeHtml(c.message)}</div>
+          </div>
+        `).join('')
+        : '<p>No messages yet. Head to Summaries and hit "Check where I\'m at" to get your first one.</p>';
+    }
+
+    initShell('inbox').then(loadInbox);
+  </script>
 </body>
 </html>

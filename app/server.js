@@ -78,6 +78,10 @@ if (isFreshDb) {
   // Transportation description tweak for the budget-form hint text.
   // Safe to run every startup -- plain UPDATE, same value each time.
   db.exec(fs.readFileSync(path.join(__dirname, 'migrations', '0004_transportation_description.sql'), 'utf8'));
+
+  // Phase 4.6: adds the checkins table. Safe to run every startup --
+  // CREATE TABLE/INDEX IF NOT EXISTS, same idempotent pattern as above.
+  db.exec(fs.readFileSync(path.join(__dirname, 'migrations', '0005_checkins_table.sql'), 'utf8'));
 }
 
 // categories are a fixed v1 taxonomy (Phase 1.1) that never changes at
@@ -363,9 +367,12 @@ app.post('/api/budgets', requireLogin, (req, res) => {
 // live demo, a deterministic template beats an API call that could
 // hang or phrase something oddly on stage. Skips Phase 4.5's
 // multi-account merge (single account for now).
-app.get('/api/sunday-summary', requireLogin, (req, res) => {
-  const userId = req.session.userId;
-
+//
+// Pulled out as its own function (Phase 4.6) so both the on-demand
+// "Check where I'm at" route and the automatic weekly job can compute
+// the exact same thing and persist it as a dated checkins row, instead
+// of this being a one-off GET that vanished on page reload.
+function computeCheckin(userId) {
   const rows = db.prepare(`
     SELECT t.date, t.amount_cents, t.category_id, c.name AS category_name, c.is_spend_category
     FROM transactions t
@@ -471,14 +478,84 @@ app.get('/api/sunday-summary', requireLogin, (req, res) => {
     message = `Not enough budget data yet to generate a full summary — set a few category budgets to get your first Sunday Summary.`;
   }
 
-  res.json({
+  return {
     period: { month: monthPrefix, day_of_month: dayOfMonth, days_in_month: daysInMonth, pct_elapsed: pctElapsed },
     tone,
     message,
     top_pattern: topPattern,
     categories: categoryBreakdown,
-  });
+  };
+}
+
+function saveCheckin(userId, source, result) {
+  const insert = db.prepare(`
+    INSERT INTO checkins (user_id, source, tone, message, payload_json)
+    VALUES (?, ?, ?, ?, ?)
+  `);
+  const info = insert.run(userId, source, result.tone, result.message, JSON.stringify(result));
+  const row = db.prepare('SELECT id, created_at FROM checkins WHERE id = ?').get(info.lastInsertRowid);
+  return { id: row.id, source, created_at: row.created_at, ...result };
+}
+
+// User-initiated: no cadence limit here on purpose. The "weekly, not
+// daily" design decision (validated in customer interviews, see slide
+// 7/customer-discovery notes) is about the automatic push below not
+// pestering people -- a user choosing to pull their own status
+// whenever they want isn't the fatigue problem that decision guards
+// against, so this can be called as often as the user likes.
+app.post('/api/checkin', requireLogin, (req, res) => {
+  const result = computeCheckin(req.session.userId);
+  res.json(saveCheckin(req.session.userId, 'manual', result));
 });
+
+app.get('/api/my-checkins', requireLogin, (req, res) => {
+  const rows = db.prepare(`
+    SELECT id, source, tone, message, payload_json, created_at
+    FROM checkins WHERE user_id = ? ORDER BY created_at DESC
+  `).all(req.session.userId);
+  res.json(rows.map(r => ({
+    id: r.id,
+    source: r.source,
+    created_at: r.created_at,
+    ...JSON.parse(r.payload_json),
+  })));
+});
+
+// Phase 4.6: the automatic weekly push, separate from the on-demand
+// route above. Gate is a strict >= 7 days since this user's last
+// 'auto' checkin (manual checkins don't count against it) -- this is
+// the actual enforcement of "weekly cadence, not daily" from the
+// customer-discovery slide, not just a deck claim. Runs shortly after
+// boot (so a fresh deploy doesn't need to wait a week to demo it),
+// then every 24h; the 7-day gate, not the interval, is what makes the
+// real cadence weekly.
+const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+
+function sqliteTimeToMs(sqliteDatetime) {
+  return new Date(sqliteDatetime.replace(' ', 'T') + 'Z').getTime();
+}
+
+function runAutoCheckins() {
+  const userIds = db.prepare('SELECT id FROM users').all().map(u => u.id);
+  for (const userId of userIds) {
+    try {
+      const last = db.prepare(`
+        SELECT created_at FROM checkins
+        WHERE user_id = ? AND source = 'auto'
+        ORDER BY created_at DESC LIMIT 1
+      `).get(userId);
+      const lastMs = last ? sqliteTimeToMs(last.created_at) : 0;
+      if (Date.now() - lastMs >= WEEK_MS) {
+        saveCheckin(userId, 'auto', computeCheckin(userId));
+      }
+    } catch (e) {
+      console.error(`Auto check-in failed for user ${userId}:`, e);
+    }
+  }
+}
+
+setTimeout(runAutoCheckins, 5000);
+setInterval(runAutoCheckins, 24 * 60 * 60 * 1000);
 
 // Deliberately throws, for Phase 0.5's acceptance test: confirm a
 // real crash shows up in the monitoring dashboard with a stack trace.

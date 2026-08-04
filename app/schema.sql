@@ -95,6 +95,23 @@ CREATE TABLE correction_rules (
   UNIQUE(user_id, normalized_merchant)
 );
 
+-- One row per generated check-in (Phase 4.6), whether the user tapped
+-- "Check where I'm at" (source = 'manual') or the weekly background
+-- job generated it for them (source = 'auto'). payload_json holds the
+-- full computed result so Inbox/Summaries can re-render any past
+-- check-in exactly like a fresh one. See migrations/0005 for the
+-- reasoning -- this table's definition must stay in sync with that file.
+CREATE TABLE checkins (
+  id           INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id      INTEGER NOT NULL REFERENCES users(id),
+  source       TEXT NOT NULL CHECK (source IN ('manual', 'auto')),
+  tone         TEXT NOT NULL,
+  message      TEXT NOT NULL,
+  payload_json TEXT NOT NULL,
+  created_at   TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
 CREATE INDEX idx_transactions_account ON transactions(account_id);
 CREATE INDEX idx_transactions_category ON transactions(category_id);
 CREATE INDEX idx_budgets_user_category ON budgets(user_id, category_id);
+CREATE INDEX idx_checkins_user_created ON checkins(user_id, created_at);
