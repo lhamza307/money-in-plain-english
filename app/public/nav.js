@@ -31,6 +31,9 @@ async function initShell(activeTab) {
     <div class="app-nav-tabs">
       ${TABS.map(t => `<a href="${t.href}" class="${t.id === activeTab ? 'active' : ''}">${t.label}</a>`).join('')}
     </div>
+    <div class="app-nav-brand">
+      <img src="/logo.png" alt="Money in Plain English">
+    </div>
     <div class="app-nav-user">
       <span>${me.email}</span>
       <button id="logout-btn">Log out</button>

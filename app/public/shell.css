@@ -47,12 +47,24 @@ input:focus, select:focus {
 }
 
 .app-nav {
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 12px 24px;
   background: white;
   border-bottom: 1px solid var(--border);
+}
+.app-nav-brand {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+.app-nav-brand img {
+  display: block;
+  height: 32px;
+  width: auto;
 }
 .app-nav-tabs a {
   font-family: 'Nunito', system-ui, sans-serif;
