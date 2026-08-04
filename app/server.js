@@ -372,7 +372,14 @@ app.post('/api/budgets', requireLogin, (req, res) => {
 // "Check where I'm at" route and the automatic weekly job can compute
 // the exact same thing and persist it as a dated checkins row, instead
 // of this being a one-off GET that vanished on page reload.
-function computeCheckin(userId) {
+// monthOffset: 0 = current calendar month (default), 1 = the month
+// before that, etc. Offset months are treated as fully elapsed
+// (dayOfMonth = daysInMonth) since they're closed books -- unlike the
+// current month, there's no "partway through" for a month that's
+// already over. Lets a user whose current-month CSV isn't uploaded
+// yet still pull a real summary for the month that just closed,
+// instead of the empty "not enough data" fallback below.
+function computeCheckin(userId, monthOffset = 0) {
   const rows = db.prepare(`
     SELECT t.date, t.amount_cents, t.category_id, c.name AS category_name, c.is_spend_category
     FROM transactions t
@@ -383,10 +390,11 @@ function computeCheckin(userId) {
   const txns = rows.map(r => ({ ...r, amount_cents: Number(decryptField(r.amount_cents)) }));
 
   const today = new Date();
-  const year = today.getFullYear();
-  const month = today.getMonth() + 1;
-  const dayOfMonth = today.getDate();
+  const targetMonth = new Date(today.getFullYear(), today.getMonth() - monthOffset, 1);
+  const year = targetMonth.getFullYear();
+  const month = targetMonth.getMonth() + 1;
   const daysInMonth = new Date(year, month, 0).getDate();
+  const dayOfMonth = monthOffset === 0 ? today.getDate() : daysInMonth;
   const pctElapsed = dayOfMonth / daysInMonth;
   const monthPrefix = `${year}-${String(month).padStart(2, '0')}`;
 
@@ -504,7 +512,12 @@ function saveCheckin(userId, source, result) {
 // whenever they want isn't the fatigue problem that decision guards
 // against, so this can be called as often as the user likes.
 app.post('/api/checkin', requireLogin, (req, res) => {
-  const result = computeCheckin(req.session.userId);
+  const { month_offset } = req.body || {};
+  const monthOffset = month_offset === undefined ? 0 : Number(month_offset);
+  if (!Number.isInteger(monthOffset) || monthOffset < 0 || monthOffset > 12) {
+    return res.status(400).json({ error: 'month_offset must be an integer between 0 and 12' });
+  }
+  const result = computeCheckin(req.session.userId, monthOffset);
   res.json(saveCheckin(req.session.userId, 'manual', result));
 });
 

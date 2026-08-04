@@ -22,7 +22,7 @@
   .budget-form button { margin-top: 14px; padding: 10px 16px; background: var(--sage); color: white; border: none; border-radius: 6px; cursor: pointer; }
   .budget-saved-note { font-size: 13px; color: var(--sage); margin-left: 10px; }
 
-  .generate-btn { padding: 10px 16px; border: 1px solid var(--sage); background: white; color: var(--sage); border-radius: 6px; cursor: pointer; margin-bottom: 24px; }
+  .generate-btn { padding: 10px 16px; border: 1px solid var(--sage); background: white; color: var(--sage); border-radius: 6px; cursor: pointer; margin-bottom: 24px; margin-right: 12px; }
 
   .summary-card { border-radius: 10px; padding: 24px; margin-bottom: 24px; }
   .summary-card.tone-suggestion { background: #fdf3ef; border: 1px solid #e8c9b8; }
@@ -57,6 +57,7 @@
     </div>
 
     <button class="generate-btn" id="checkin-btn">Check where I'm at</button>
+    <button class="generate-btn" id="checkin-prev-btn">Summarize last month</button>
 
     <div id="summary-output"></div>
   </div>
@@ -164,7 +165,20 @@
     }
 
     document.getElementById('checkin-btn').addEventListener('click', async () => {
-      await fetch('/api/checkin', { method: 'POST' });
+      await fetch('/api/checkin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ month_offset: 0 })
+      });
+      loadHistory();
+    });
+
+    document.getElementById('checkin-prev-btn').addEventListener('click', async () => {
+      await fetch('/api/checkin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ month_offset: 1 })
+      });
       loadHistory();
     });
 
